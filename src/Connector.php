@@ -46,11 +46,6 @@ class Connector extends BaseConnector
 
     protected function __construct()
     {
-        // Destroy Magento's session
-        if ('' != session_id()) {
-            session_destroy();
-        }
-
         $this->setPrimaryKeyMapper(new PrimaryKeyMapper());
         $this->setTokenLoader(new TokenLoader());
         $this->setChecksumLoader(new ChecksumLoader());
@@ -129,7 +124,7 @@ class Connector extends BaseConnector
     /**
      * Getter Controller
      *
-     * @return \jtl\Core\Controller\Controller
+     * @return jtl\Connector\Core\Controller\Controller
      */
     public function getController()
     {
@@ -139,7 +134,7 @@ class Connector extends BaseConnector
     /**
      * Setter Controller
      *
-     * @param \jtl\Core\Controller\Controller $controller
+     * @param jtl\Connector\Core\Controller\Controller $controller
      */
     public function setController(CoreController $controller)
     {
