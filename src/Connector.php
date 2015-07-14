@@ -7,14 +7,13 @@
 namespace jtl\Connector\Example;
 
 use jtl\Connector\Base\Connector as BaseConnector;
-use jtl\Connector\Core\Exception\TransactionException;
 use jtl\Connector\Core\Rpc\Method;
 use jtl\Connector\Core\Rpc\RequestPacket;
 use jtl\Connector\Core\Utilities\RpcMethod;
 use jtl\Connector\Core\Controller\Controller as CoreController;
-use jtl\Connector\Example\ChecksumLoader;
-use jtl\Connector\Example\PrimaryKeyMapper;
-use jtl\Connector\Example\TokenLoader;
+use jtl\Connector\Example\Authentication\TokenLoader;
+use jtl\Connector\Example\Checksum\ChecksumLoader;
+use jtl\Connector\Example\Mapper\PrimaryKeyMapper;
 use jtl\Connector\Result\Action;
 
 /**
@@ -28,27 +27,20 @@ class Connector extends BaseConnector
     /**
      * Current Controller
      *
-     * @var jtl\Connector\Core\Controller\Controller
+     * @var \jtl\Connector\Core\Controller\Controller
      */
-    protected $_controller;
+    protected $controller;
 
     /**
-     *
      * @var string
      */
-    protected $_action;
+    protected $action;
 
-    /**
-     *
-     * @var string
-     */
-    protected $_config;
-
-    protected function __construct()
+    public function initialize()
     {
-        $this->setPrimaryKeyMapper(new PrimaryKeyMapper());
-        $this->setTokenLoader(new TokenLoader());
-        $this->setChecksumLoader(new ChecksumLoader());
+        $this->setPrimaryKeyMapper(new PrimaryKeyMapper())
+            ->setTokenLoader(new TokenLoader())
+            ->setChecksumLoader(new ChecksumLoader());
     }
 
     /**
@@ -62,10 +54,10 @@ class Connector extends BaseConnector
 
         $class = "\\jtl\\Connector\\Magento\\Controller\\{$controller}";
         if (class_exists($class)) {
-            $this->_controller = $class::getInstance();
-            $this->_action = RpcMethod::buildAction($this->getMethod()->getAction());
+            $this->controller = $class::getInstance();
+            $this->action = RpcMethod::buildAction($this->getMethod()->getAction());
 
-            return is_callable(array($this->_controller, $this->_action));
+            return is_callable(array($this->controller, $this->action));
         }
 
         return false;
@@ -81,14 +73,14 @@ class Connector extends BaseConnector
         $config = $this->getConfig();
 
         // Set the config to our controller
-        $this->_controller->setConfig($config);
+        $this->controller->setConfig($config);
 
         // Set the method to our controller
-        $this->_controller->setMethod($this->getMethod());
+        $this->controller->setMethod($this->getMethod());
 
-        if ($this->_action === Method::ACTION_PUSH || $this->_action === Method::ACTION_DELETE) {
+        if ($this->action === Method::ACTION_PUSH || $this->action === Method::ACTION_DELETE) {
             if ($this->getMethod()->getController() === 'image') {
-                return $this->_controller->{$this->_action}($requestpacket->getParams());
+                return $this->controller->{$this->action}($requestpacket->getParams());
             }
 
             if (!is_array($requestpacket->getParams())) {
@@ -97,15 +89,14 @@ class Connector extends BaseConnector
 
             $action = new Action();
             $results = array();
-            $errors = array();
-            if ($this->_action === Method::ACTION_PUSH && $this->getMethod()->getController() === 'product_price') {
+            if ($this->action === Method::ACTION_PUSH && $this->getMethod()->getController() === 'product_price') {
                 $params = $requestpacket->getParams();
-                $result = $this->_controller->update($params);
+                $result = $this->controller->update($params);
                 $results[] = $result->getResult();
             }
             else {
                 foreach ($requestpacket->getParams() as $param) {
-                    $result = $this->_controller->{$this->_action}($param);
+                    $result = $this->controller->{$this->action}($param);
                     $results[] = $result->getResult();
                 }
             }
@@ -117,28 +108,28 @@ class Connector extends BaseConnector
             return $action;
         }
         else {
-            return $this->_controller->{$this->_action}($requestpacket->getParams());
+            return $this->controller->{$this->action}($requestpacket->getParams());
         }
     }
 
     /**
      * Getter Controller
      *
-     * @return jtl\Connector\Core\Controller\Controller
+     * @return \jtl\Connector\Core\Controller\Controller
      */
     public function getController()
     {
-        return $this->_controller;
+        return $this->controller;
     }
 
     /**
      * Setter Controller
      *
-     * @param jtl\Connector\Core\Controller\Controller $controller
+     * @param \jtl\Connector\Core\Controller\Controller $controller
      */
     public function setController(CoreController $controller)
     {
-        $this->_controller = $controller;
+        $this->controller = $controller;
     }
 
     /**
@@ -148,7 +139,7 @@ class Connector extends BaseConnector
      */
     public function getAction()
     {
-        return $this->_action;
+        return $this->action;
     }
 
     /**
@@ -158,6 +149,6 @@ class Connector extends BaseConnector
      */
     public function setAction($action)
     {
-        $this->_action = $action;
+        $this->action = $action;
     }
 }

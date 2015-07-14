@@ -1,6 +1,6 @@
 <?php
 
-namespace jtl\Connector\Example;
+namespace jtl\Connector\Example\Mapper;
 
 use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Drawing\ImageRelationType;

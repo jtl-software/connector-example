@@ -1,6 +1,6 @@
 <?php
 
-namespace jtl\Connector\Example;
+namespace jtl\Connector\Example\Checksum;
 
 use jtl\Connector\Checksum\IChecksumLoader;
 
