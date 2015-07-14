@@ -29,7 +29,7 @@ function exception_handler(\Exception $exception)
     $responsepacket->setError($error)
         ->setJtlrpc("2.0");
 
-    if (isset($requestpacket) && $requestpacket !== null && is_object($requestpacket) && get_class($requestpacket) == "jtl\\Core\\Rpc\\RequestPacket") {
+    if (isset($requestpacket) && $requestpacket !== null && $requestpacket instanceof RequestPacket) {
         $responsepacket->setId($requestpacket->getId());
     }
 
@@ -38,8 +38,7 @@ function exception_handler(\Exception $exception)
 
 set_exception_handler('exception_handler');
 
-try
-{
+try {
     $logDir = CONNECTOR_DIR . DIRECTORY_SEPARATOR . 'logs';
     if (!is_dir($logDir)) {
         mkdir($logDir);
@@ -51,8 +50,6 @@ try
     $application = Application::getInstance();
     $application->register($connector);
     $application->run();
-}
-catch (\Exception $e)
-{
+} catch (\Exception $e) {
     exception_handler($e);
 }
