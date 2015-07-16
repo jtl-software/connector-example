@@ -4,9 +4,9 @@ build/**
 .buildpath
 composer.lock
 composer.phar
-db/*
 dist/**
 docs/**
+db/connector.s3db
 install/db/*
 logs/*
 nbproject/**
