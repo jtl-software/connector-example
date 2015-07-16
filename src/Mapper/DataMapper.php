@@ -58,9 +58,24 @@ abstract class DataMapper extends Singleton
     {
         $json = $model->toJson();
         $type = strtolower(ClassName::getFromNS(get_called_class()));
-        $id = $this->db->insert(sprintf('INSERT INTO %s (id, data) VALUES (null, %s)', $type, $json));
 
-        $model->getId()->setEndpoint($id);
+        if ($model->getId()->getEndpoint() > 0) {
+            $stmt = $this->db->prepare(sprintf('UPDATE %s SET data = :data WHERE id = :id', $type));
+            $stmt->bindValue(':table', $type, SQLITE3_TEXT);
+            $stmt->bindValue(':data', $json, SQLITE3_TEXT);
+            $stmt->bindValue(':id', $model->getId()->getEndpoint(), SQLITE3_INTEGER);
+
+            $stmt->execute();
+        } else {
+            $stmt = $this->db->prepare(sprintf('INSERT INTO %s (id, data) VALUES (null, :data)', $type));
+            $stmt->bindValue(':table', $type, SQLITE3_TEXT);
+            $stmt->bindValue(':data', $json, SQLITE3_TEXT);
+
+            $result = $stmt->execute();
+            if ($result) {
+                $model->getId()->setEndpoint($this->db->getLastInsertRowId());
+            }
+        }
     }
 
     public function remove($id)

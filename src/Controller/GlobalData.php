@@ -7,6 +7,7 @@
 namespace jtl\Connector\Example\Controller;
 
 use jtl\Connector\Core\Logger\Logger;
+use jtl\Connector\Core\Model\DataModel;
 use jtl\Connector\Core\Model\QueryFilter;
 use jtl\Connector\Core\Rpc\Error;
 use jtl\Connector\Example\Utility\Mmc;
@@ -18,7 +19,6 @@ use jtl\Connector\Model\Identity;
 use jtl\Connector\Model\Language;
 use jtl\Connector\Model\TaxRate;
 use jtl\Connector\Result\Action;
-use jtl\Connector\Serializer\JMS\SerializerBuilder;
 
 class GlobalData extends DataController
 {
@@ -86,6 +86,26 @@ class GlobalData extends DataController
             $err->setCode($exc->getCode());
             $err->setMessage($exc->getMessage());
             $action->setError($err);
+        }
+
+        return $action;
+    }
+
+    /**
+     * Insert or update
+     *
+     * @param \jtl\Connector\Core\Model\DataModel $model
+     * @return \jtl\Connector\Result\Action
+     */
+    public function push(DataModel $model)
+    {
+        $action = new Action();
+        $action->setHandled(true);
+
+        try {
+            $action->setResult(new GlobalData());
+        } catch (\Exception $exc) {
+            $action->setError($this->handleException($exc));
         }
 
         return $action;
