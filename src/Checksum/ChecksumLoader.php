@@ -1,11 +1,28 @@
 <?php
+/**
+ * @copyright 2010-2013 JTL-Software GmbH
+ * @package jtl\Connector\Example\Checksum
+ */
 
 namespace jtl\Connector\Example\Checksum;
 
 use jtl\Connector\Checksum\IChecksumLoader;
+use jtl\Connector\Core\IO\Path;
+use jtl\Connector\Database\Sqlite3;
 
 class ChecksumLoader implements IChecksumLoader
 {
+    protected $db;
+
+    public function __construct()
+    {
+        $sqlite3 = Sqlite3::getInstance();
+        if (!$sqlite3->isConnected()) {
+            $sqlite3->connect(array('location' => Path::combine(CONNECTOR_DIR, 'db', 'connector.s3db')));
+        }
+
+        $this->db = $sqlite3;
+    }
 
     /**
      * Loads the checksum
@@ -16,7 +33,7 @@ class ChecksumLoader implements IChecksumLoader
      */
     public function read($endpointId, $type)
     {
-        // TODO: Implement read() method.
+        return $this->db->fetchSingle(sprintf('SELECT checksum FROM checksum WHERE endpoint = %s AND type = %s', $endpointId, $type));
     }
 
     /**
@@ -29,7 +46,9 @@ class ChecksumLoader implements IChecksumLoader
      */
     public function write($endpointId, $type, $checksum)
     {
-        // TODO: Implement write() method.
+        $id = $this->db->insert(sprintf('INSERT INTO checksum (endpoint, type, checksum) VALUES (%s, %s, %s)', $endpointId, $type, $checksum));
+
+        return $id !== false;
     }
 
     /**
@@ -41,6 +60,6 @@ class ChecksumLoader implements IChecksumLoader
      */
     public function delete($endpointId, $type)
     {
-        // TODO: Implement delete() method.
+        return $this->db->query(sprintf('DELETE FROM checksum WHERE endpoint = %s AND type = %s', $endpointId, $type));
     }
 }

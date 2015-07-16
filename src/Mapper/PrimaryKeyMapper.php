@@ -1,14 +1,28 @@
 <?php
+/**
+ * @copyright 2010-2013 JTL-Software GmbH
+ * @package jtl\Connector\Example\Mapper
+ */
 
 namespace jtl\Connector\Example\Mapper;
 
-use jtl\Connector\Core\Logger\Logger;
-use jtl\Connector\Drawing\ImageRelationType;
-use jtl\Connector\Linker\IdentityLinker;
+use jtl\Connector\Core\IO\Path;
+use jtl\Connector\Database\Sqlite3;
 use jtl\Connector\Mapper\IPrimaryKeyMapper;
 
 class PrimaryKeyMapper implements IPrimaryKeyMapper
 {
+    protected $db;
+
+    public function __construct()
+    {
+        $sqlite3 = Sqlite3::getInstance();
+        if (!$sqlite3->isConnected()) {
+            $sqlite3->connect(array('location' => Path::combine(CONNECTOR_DIR, 'db', 'connector.s3db')));
+        }
+
+        $this->db = $sqlite3;
+    }
 
     /**
      * Host ID getter
@@ -19,7 +33,7 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
      */
     public function getHostId($endpointId, $type)
     {
-        // TODO: Implement getHostId() method.
+        return $this->db->fetchSingle(sprintf('SELECT host FROM mapping WHERE endpoint = %s AND type = %s', $endpointId, $type));
     }
 
     /**
@@ -31,7 +45,7 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
      */
     public function getEndpointId($hostId, $type)
     {
-        // TODO: Implement getEndpointId() method.
+        return $this->db->fetchSingle(sprintf('SELECT endpoint FROM mapping WHERE host = %s AND type = %s', $hostId, $type));
     }
 
     /**
@@ -44,7 +58,9 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
      */
     public function save($endpointId, $hostId, $type)
     {
-        // TODO: Implement save() method.
+        $id = $this->db->insert(sprintf('INSERT INTO mapping (endpoint, host, type) VALUES (%s, %s, %s)', $endpointId, $hostId, $type));
+
+        return $id !== false;
     }
 
     /**
@@ -57,7 +73,16 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
      */
     public function delete($endpointId = null, $hostId = null, $type)
     {
-        // TODO: Implement delete() method.
+        $where = '';
+        if ($endpointId !== null && $hostId !== null) {
+            $where = sprintf('WHERE endpoint = %s AND host = %s AND type = %s', $endpointId, $hostId, $type);
+        } elseif ($endpointId !== null) {
+            $where = sprintf('WHERE endpoint = %s AND type = %s', $endpointId, $type);
+        } elseif ($hostId !== null) {
+            $where = sprintf('WHERE host = %s AND type = %s', $hostId, $type);
+        }
+
+        return $this->db->query(sprintf('DELETE FROM mapping %s'), $where);
     }
 
     /**
@@ -67,7 +92,7 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
      */
     public function clear()
     {
-        // TODO: Implement clear() method.
+        return $this->db->query('DELETE FROM mapping');
     }
 
     /**
@@ -77,6 +102,6 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
      */
     public function gc()
     {
-        // TODO: Implement gc() method.
+        return true;
     }
 }

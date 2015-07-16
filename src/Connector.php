@@ -20,7 +20,6 @@ use jtl\Connector\Result\Action;
  * Example Connector
  *
  * @access public
- * @author Christian Spoo <christian.spoo@jtl-software.com>
  */
 class Connector extends BaseConnector
 {
@@ -52,7 +51,7 @@ class Connector extends BaseConnector
     {
         $controller = RpcMethod::buildController($this->getMethod()->getController());
 
-        $class = "\\jtl\\Connector\\Magento\\Controller\\{$controller}";
+        $class = "\\jtl\\Connector\\Example\\Controller\\{$controller}";
         if (class_exists($class)) {
             $this->controller = $class::getInstance();
             $this->action = RpcMethod::buildAction($this->getMethod()->getAction());

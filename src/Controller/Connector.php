@@ -1,62 +1,58 @@
 <?php
+/**
+ * @copyright 2010-2013 JTL-Software GmbH
+ * @package jtl\Connector\Example\Controller
+ */
 
 namespace jtl\Connector\Example\Controller;
 
-use jtl\Connector\Core\Controller\Controller;
-use jtl\Connector\Core\Model\DataModel;
+use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Core\Model\QueryFilter;
-use jtl\Connector\Core\Rpc\Error;
+use jtl\Connector\Example\Utility\Mmc;
+use jtl\Connector\Formatter\ExceptionFormatter;
 use jtl\Connector\Result\Action;
 use jtl\Connector\Model\ConnectorIdentification;
 
-class Connector extends Controller
+class Connector extends DataController
 {
-    private $controllers = array(
-        'Product'
-    );
-
-    public function push(DataModel $model)
-    {
-
-    }
-
-    public function delete(DataModel $model)
-    {
-
-    }
-
-    public function pull(QueryFilter $filter)
-    {
-
-    }
-
-    public function statistic(QueryFilter $filter)
+    /**
+     * Statistic
+     *
+     * @param \jtl\Connector\Core\Model\QueryFilter $queryFilter
+     * @return \jtl\Connector\Result\Action
+     */
+    public function statistic(QueryFilter $queryFilter)
     {
         $action = new Action();
         $action->setHandled(true);
 
-        try {
-            $result = array();
+        $results = array();
 
-            foreach ($this->controllers as $controller) {
-                $controller = __NAMESPACE__ . '\\' . $controller;
-                $obj = new $controller();
+        $mainControllers = array(
+            'Category',
+            'Customer',
+            'CustomerOrder',
+            'CrossSelling',
+            'DeliveryNote',
+            'Image',
+            'Product',
+            'Manufacturer',
+            'Payment'
+        );
 
-                if (method_exists($obj, 'statistic')) {
-                    $method_result = $obj->statistic($filter);
-
-                    $result[] = $method_result->getResult();
+        foreach ($mainControllers as $mainController) {
+            try {
+                $controller = Mmc::getController($mainController);
+                $result = $controller->statistic($queryFilter);
+                if ($result !== null && $result->isHandled() && !$result->isError()) {
+                    $results[] = $result->getResult();
                 }
+            } catch (\Exception $exc) {
+                Logger::write(ExceptionFormatter::format($exc), Logger::WARNING, 'controller');
             }
+        }
 
-            $action->setResult($result);
-        }
-        catch (\Exception $exc) {
-            $err = new Error();
-            $err->setCode($exc->getCode());
-            $err->setMessage($exc->getMessage());
-            $action->setError($err);
-        }
+        $action->setResult($results);
 
         return $action;
     }
@@ -72,7 +68,7 @@ class Connector extends Controller
         $action->setHandled(true);
 
         $identification = new ConnectorIdentification();
-        $identification->setEndpointVersion('1.0.0.0')
+        $identification->setEndpointVersion('1.0.0')
             ->setPlatformName('Example')
             ->setPlatformVersion('1.0')
             ->setProtocolVersion(Application()->getProtocolVersion());
@@ -89,6 +85,10 @@ class Connector extends Controller
      */
     public function finish()
     {
+        $action = new Action();
+
+        $action->setHandled(true);
+        $action->setResult(true);
 
         return $action;
     }

@@ -6,7 +6,7 @@
 
 namespace jtl\Connector\Example\Controller;
 
-class Product extends DataController
+class DeliveryNote extends DataController
 {
 
 }
