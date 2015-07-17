@@ -39,20 +39,33 @@ class GlobalData extends DataController
 
             $globalData = Mmc::getModel('GlobalData');
 
-            $id = new Identity(1);
+            // ***************************************
+            // * Static values for presentation only *
+            // ***************************************
 
-            // Currencies
+            $id1 = new Identity(1);
+            $id2 = new Identity(2);
+
+            // Languages
             $globalData->addLanguage(
-                (new Language())->setId($id)
+                (new Language())->setId($id1)
                     ->setLanguageISO('ger')
                     ->setIsDefault(true)
                     ->setNameGerman('Deutsch')
                     ->setNameEnglish('German')
             );
 
-            // Languages
+            $globalData->addLanguage(
+                (new Language())->setId($id2)
+                    ->setLanguageISO('eng')
+                    ->setIsDefault(false)
+                    ->setNameGerman('Englisch')
+                    ->setNameEnglish('English')
+            );
+
+            // Currencies
             $globalData->addCurrency(
-                (new Currency())->setId($id)
+                (new Currency())->setId($id1)
                     ->setIsDefault(true)
                     ->setName('Euro')
                     ->setDelimiterCent(',')
@@ -65,16 +78,28 @@ class GlobalData extends DataController
 
             // CustomerGroups
             $globalData->addCustomerGroup(
-                (new CustomerGroup())->setId(new Identity(1))
+                (new CustomerGroup())->setId($id1)
                     ->setIsDefault(true)
                     ->setApplyNetPrice(false)
-                    ->addI18n((new CustomerGroupI18n())->setCustomerGroupId($id)->setLanguageISO('ger')->setName('Endkunde'))
+                    ->addI18n((new CustomerGroupI18n())->setCustomerGroupId($id1)->setLanguageISO('ger')->setName('Endkunde'))
+            );
+
+            $globalData->addCustomerGroup(
+                (new CustomerGroup())->setId($id2)
+                    ->setIsDefault(false)
+                    ->setApplyNetPrice(true)
+                    ->addI18n((new CustomerGroupI18n())->setCustomerGroupId($id2)->setLanguageISO('ger')->setName('Haendler'))
             );
 
             // TaxRates
             $globalData->addTaxRate(
-                (new TaxRate())->setId($id)
+                (new TaxRate())->setId($id1)
                     ->setRate(19.0)
+            );
+
+            $globalData->addTaxRate(
+                (new TaxRate())->setId($id2)
+                    ->setRate(7.0)
             );
 
             $result[] = $globalData;
