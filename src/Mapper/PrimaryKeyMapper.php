@@ -41,10 +41,13 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
      *
      * @param integer $hostId
      * @param integer $type
+     * @param string $relationType
      * @return string|null
      */
-    public function getEndpointId($hostId, $type)
+    public function getEndpointId($hostId, $type, $relationType = null)
     {
+        // @todo: type 16 (Image) switch via $relationType
+
         return $this->db->fetchSingle(sprintf('SELECT endpoint FROM mapping WHERE host = %s AND type = %s', $hostId, $type));
     }
 
