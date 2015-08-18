@@ -17,6 +17,7 @@ use jtl\Connector\Model\CustomerGroup;
 use jtl\Connector\Model\CustomerGroupI18n;
 use jtl\Connector\Model\Identity;
 use jtl\Connector\Model\Language;
+use jtl\Connector\Model\ShippingMethod;
 use jtl\Connector\Model\TaxRate;
 use jtl\Connector\Result\Action;
 
@@ -100,6 +101,12 @@ class GlobalData extends DataController
             $globalData->addTaxRate(
                 (new TaxRate())->setId($id2)
                     ->setRate(7.0)
+            );
+
+            // shippingMethods
+            $globalData->addShippingMethod(
+                (new ShippingMethod())->setId($id1)
+                    ->setName('DHL Versand')
             );
 
             $result[] = $globalData;
