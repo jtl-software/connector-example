@@ -10,6 +10,7 @@ use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Core\Model\QueryFilter;
 use jtl\Connector\Example\Utility\Mmc;
 use jtl\Connector\Formatter\ExceptionFormatter;
+use jtl\Connector\Model\ConnectorServerInfo;
 use jtl\Connector\Result\Action;
 use jtl\Connector\Model\ConnectorIdentification;
 
@@ -67,11 +68,34 @@ class Connector extends DataController
         $action = new Action();
         $action->setHandled(true);
 
+        $returnBytes = function($value) {
+            $value = trim($value);
+            $unit = strtolower($value[strlen($value) - 1]);
+            switch ($unit) {
+                case 'g':
+                    $value *= 1024;
+                case 'm':
+                    $value *= 1024;
+                    break;
+                case 'k':
+                    $value *= 1024;
+            }
+
+            return $value;
+        };
+
+        $serverInfo = new ConnectorServerInfo();
+        $serverInfo->setMemoryLimit($returnBytes(ini_get('memory_limit')))
+            ->setExecutionTime((int) ini_get('max_execution_time'))
+            ->setPostMaxSize($returnBytes(ini_get('post_max_size')))
+            ->setUploadMaxFilesize($returnBytes(ini_get('upload_max_filesize')));
+
         $identification = new ConnectorIdentification();
         $identification->setEndpointVersion('1.0.0')
             ->setPlatformName('Example')
             ->setPlatformVersion('1.0')
-            ->setProtocolVersion(Application()->getProtocolVersion());
+            ->setProtocolVersion(Application()->getProtocolVersion())
+            ->setServerInfo($serverInfo);
 
         $action->setResult($identification);
 
