@@ -69,11 +69,6 @@ class Connector extends BaseConnector
      */
     public function handle(RequestPacket $requestpacket)
     {
-        $config = $this->getConfig();
-
-        // Set the config to our controller
-        $this->controller->setConfig($config);
-
         // Set the method to our controller
         $this->controller->setMethod($this->getMethod());
 
