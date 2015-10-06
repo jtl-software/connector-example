@@ -5,7 +5,10 @@ plugins/**
 !plugins/.gitkeep
 .idea/**
 logs/**
-!logs/.gitkeep
+!logs/.htaccess
 config/**
-!config/.gitkeep
-db/connector.s3db
+!config/features.json
+!config/.htaccess
+db/**
+!db/connector.s3db.dist
+!db/.htaccess
