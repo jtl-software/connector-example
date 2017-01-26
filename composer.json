@@ -25,16 +25,9 @@
       "role" : "Developer"
     }
   ],
-  "repositories" : [
-    {
-      "type" : "git",
-      "url" : "git@gitlab.jtl-software.de:jtl-software-gmbh/jtlconnector.git",
-      "reference" : "origin/master"
-    }
-  ],
   "require" : {
     "php" : ">=5.4.0",
-    "jtl/connector" : "~2.0"
+	"jtl/connector": "^2.4.0"
   },
   "autoload" : {
     "psr-4" : {
