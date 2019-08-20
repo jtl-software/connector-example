@@ -4,27 +4,7 @@
   "description" : "JTL-Connector Example endpoint",
   "keywords" : ["jtl", "connector", "example"],
   "homepage" : "http://www.jtl-software.de",
-  "license" : "LGPL",
-  "authors" : [
-    {
-      "name" : "Daniel Böhmer",
-      "email" : "daniel.boehmer@jtl-software.com",
-      "homepage" : "http://www.jtl-software.de",
-      "role" : "Developer"
-    },
-    {
-      "name" : "Daniel Hoffmann",
-      "email" : "daniel.hoffmann@jtl-software.com",
-      "homepage" : "http://www.jtl-software.de",
-      "role" : "Developer"
-    },
-    {
-      "name" : "Christian Spoo",
-      "email" : "christian.spoo@jtl-software.com",
-      "homepage" : "http://www.jtl-software.de",
-      "role" : "Developer"
-    }
-  ],
+  "license" : "LGPL-3.0-or-later",
   "require" : {
     "php" : ">=5.4.0",
 	"jtl/connector": "^2.4.0"
