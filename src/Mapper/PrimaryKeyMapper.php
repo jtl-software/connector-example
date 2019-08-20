@@ -1,10 +1,10 @@
 <?php
 /**
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\Example\Mapper
+ * @package Jtl\Connector\Example\Mapper
  */
 
-namespace jtl\Connector\Example\Mapper;
+namespace Jtl\Connector\Example\Mapper;
 
 use jtl\Connector\Core\IO\Path;
 use jtl\Connector\Database\Sqlite3;

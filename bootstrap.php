@@ -1,10 +1,9 @@
 <?php
-
 /**
  * @copyright 2010-2015 JTL-Software GmbH
- * @package jtl\Connector\Example
+ * @package Jtl\Connector\Example
  */
 
 defined('CONNECTOR_DIR') || define("CONNECTOR_DIR", __DIR__);
+require_once (__DIR__ . "/vendor/autoload.php");
 
-include (__DIR__ . "/src/bootstrap.php");

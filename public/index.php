@@ -1,13 +1,12 @@
 <?php
 /**
  * @copyright 2010-2015 JTL-Software GmbH
- * @package jtl\Connector\Example
+ * @package Jtl\Connector\Example
  */
-
-require_once (__DIR__ . "/../vendor/autoload.php");
+require_once dirname(__DIR__). "/bootstrap.php";
 
 use jtl\Connector\Application\Application;
-use jtl\Connector\Example\Connector;
+use Jtl\Connector\Example\Connector;
 
 $application = null;
 

@@ -1,7 +1,7 @@
 JTL Example Connector
 =====================
 
-Welcome to the JTL Example Connector
+Welcome to the example of a JTL-Connector
 
 ### Use Composer (*recommended*)
 

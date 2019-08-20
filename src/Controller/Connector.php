@@ -1,14 +1,14 @@
 <?php
 /**
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\Example\Controller
+ * @package Jtl\Connector\Example\Controller
  */
 
-namespace jtl\Connector\Example\Controller;
+namespace Jtl\Connector\Example\Controller;
 
 use jtl\Connector\Core\Logger\Logger;
 use jtl\Connector\Core\Model\QueryFilter;
-use jtl\Connector\Example\Utility\Mmc;
+use Jtl\Connector\Example\Utility\Mmc;
 use jtl\Connector\Formatter\ExceptionFormatter;
 use jtl\Connector\Model\ConnectorServerInfo;
 use jtl\Connector\Result\Action;

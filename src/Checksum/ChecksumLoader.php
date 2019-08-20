@@ -1,10 +1,10 @@
 <?php
 /**
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\Example\Checksum
+ * @package Jtl\Connector\Example\Checksum
  */
 
-namespace jtl\Connector\Example\Checksum;
+namespace Jtl\Connector\Example\Checksum;
 
 use jtl\Connector\Checksum\IChecksumLoader;
 use jtl\Connector\Core\IO\Path;

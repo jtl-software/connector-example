@@ -1,10 +1,10 @@
 <?php
 /**
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\Example\Utility
+ * @package Jtl\Connector\Example\Utility
  */
 
-namespace jtl\Connector\Example\Utility;
+namespace Jtl\Connector\Example\Utility;
 
 /**
  * Model Mapper Controller Class
