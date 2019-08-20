@@ -91,8 +91,10 @@ class Connector extends DataController
 
         $identification = new ConnectorIdentification();
         $identification->setEndpointVersion('1.0.0')
-            ->setPlatformName('Example')
-            ->setPlatformVersion('1.0')
+            //Bulk platform is the license for third party connectors
+            ->setPlatformName('Bulk')
+            //Do not set platformVersion for Bulk platform
+            //->setPlatformVersion('1.0')
             ->setProtocolVersion(Application()->getProtocolVersion())
             ->setServerInfo($serverInfo);
 
