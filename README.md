@@ -6,12 +6,12 @@ Welcome to the example of a JTL-Connector
 ### Use Composer (*recommended*)
 
 If you don't have Composer yet, download it following the instructions on
-http://getcomposer.org/ or just run the following command:
+https://getcomposer.org/ or just run the following command:
 
-    curl -s http://getcomposer.org/installer | php
+    curl -s https://getcomposer.org/installer | php
     
-Guide: http://guide.jtl-software.de/jtl/Kategorie:JTL-Connector#JTL-Connector
+Guide: https://guide.jtl-software.de/jtl/Kategorie:JTL-Connector#JTL-Connector
 
-Class documentation: http://docs.jtl-software.de
+Class documentation: https://docs.jtl-software.de
 
-Developer documentation: http://docs.jtl-connector.de
+Developer documentation: https://docs.jtl-connector.de
