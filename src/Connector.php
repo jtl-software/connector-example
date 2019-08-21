@@ -2,18 +2,18 @@
 /**
  *
  * @copyright 2010-2015 JTL-Software GmbH
- * @package jtl\Connector\Example
+ * @package Jtl\Connector\Example
  */
-namespace jtl\Connector\Example;
+namespace Jtl\Connector\Example;
 
 use jtl\Connector\Base\Connector as BaseConnector;
 use jtl\Connector\Core\Rpc\Method;
 use jtl\Connector\Core\Rpc\RequestPacket;
 use jtl\Connector\Core\Utilities\RpcMethod;
 use jtl\Connector\Core\Controller\Controller as CoreController;
-use jtl\Connector\Example\Authentication\TokenLoader;
-use jtl\Connector\Example\Checksum\ChecksumLoader;
-use jtl\Connector\Example\Mapper\PrimaryKeyMapper;
+use Jtl\Connector\Example\Authentication\TokenLoader;
+use Jtl\Connector\Example\Checksum\ChecksumLoader;
+use Jtl\Connector\Example\Mapper\PrimaryKeyMapper;
 use jtl\Connector\Result\Action;
 
 /**

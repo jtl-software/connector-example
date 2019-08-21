@@ -1,7 +1,7 @@
 JTL Example Connector
 =====================
 
-Welcome to the JTL Example Connector
+Welcome to an example of a JTL-Connector
 
 ### Use Composer (*recommended*)
 
@@ -12,6 +12,6 @@ https://getcomposer.org/ or just run the following command:
     
 Guide: https://guide.jtl-software.de/jtl/Kategorie:JTL-Connector#JTL-Connector
 
-Class documentation: https://docs.jtl-software.de
-
 Developer documentation: https://docs.jtl-connector.de
+
+Connector core repository: https://github.com/jtl-software/connector 

@@ -1,10 +1,10 @@
 <?php
 /**
  * @copyright 2010-2013 JTL-Software GmbH
- * @package jtl\Connector\Example\Controller
+ * @package Jtl\Connector\Example\Controller
  */
 
-namespace jtl\Connector\Example\Controller;
+namespace Jtl\Connector\Example\Controller;
 
 class DeliveryNote extends DataController
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace jtl\Connector\Example\Authentication;
+namespace Jtl\Connector\Example\Authentication;
 
 use jtl\Connector\Authentication\ITokenLoader;
 
