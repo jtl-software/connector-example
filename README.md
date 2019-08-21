@@ -1,4 +1,4 @@
-JTL Example Connector
+Example Connector
 =====================
 
 Welcome to an example of a JTL-Connector
