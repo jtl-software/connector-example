@@ -12,8 +12,8 @@ namespace Jtl\Connector\Example\Utility;
 final class Mmc
 {
     const NAMESPACE_MODEL = "\\jtl\\Connector\\Model\\";
-    const NAMESPACE_MAPPER = "\\jtl\\Connector\\Example\\Mapper\\";
-    const NAMESPACE_CONTROLLER = "\\jtl\\Connector\\Example\\Controller\\";
+    const NAMESPACE_MAPPER = "\\Jtl\\Connector\\Example\\Mapper\\";
+    const NAMESPACE_CONTROLLER = "\\Jtl\\Connector\\Example\\Controller\\";
 
     private function __construct()
     {

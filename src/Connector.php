@@ -51,7 +51,7 @@ class Connector extends BaseConnector
     {
         $controller = RpcMethod::buildController($this->getMethod()->getController());
 
-        $class = "\\jtl\\Connector\\Example\\Controller\\{$controller}";
+        $class = "\\Jtl\\Connector\\Example\\Controller\\{$controller}";
         if (class_exists($class)) {
             $this->controller = $class::getInstance();
             $this->action = RpcMethod::buildAction($this->getMethod()->getAction());
