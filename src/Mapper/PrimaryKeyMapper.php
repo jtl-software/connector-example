@@ -1,80 +1,59 @@
 <?php
-/**
- * @copyright 2010-2013 JTL-Software GmbH
- * @package Jtl\Connector\Example\Mapper
- */
 
 namespace Jtl\Connector\Example\Mapper;
 
-use jtl\Connector\Core\IO\Path;
-use jtl\Connector\Database\Sqlite3;
-use jtl\Connector\Mapper\IPrimaryKeyMapper;
+use Jtl\Connector\Core\Mapper\PrimaryKeyMapperInterface;
+use Jtl\Connector\Example\PDOInterface;
 
-class PrimaryKeyMapper implements IPrimaryKeyMapper
+class PrimaryKeyMapper implements PrimaryKeyMapperInterface
 {
     protected $db;
-
+    
     public function __construct()
     {
-        $sqlite3 = Sqlite3::getInstance();
-        if (!$sqlite3->isConnected()) {
-            $sqlite3->connect(array('location' => Path::combine(CONNECTOR_DIR, 'db', 'connector.s3db')));
+        $pdo = new PDOInterface();
+        if (!$pdo->isConnected()) {
+            $pdo->connect([
+                "host" => "localhost",
+                "dbName" => "example_connector_db",
+                "username" => "root",
+                "password" => "jtlgmbh",
+            ]);
         }
-
-        $this->db = $sqlite3;
+    
+        $this->db = $pdo;
     }
-
+    
     /**
-     * Host ID getter
-     *
-     * @param string $endpointId
-     * @param integer $type
-     * @return integer|null
+     * @inheritDoc
      */
-    public function getHostId($endpointId, $type)
+    public function getHostId(int $type, string $endpointId) : ?int
     {
         return $this->db->fetchSingle(sprintf('SELECT host FROM mapping WHERE endpoint = %s AND type = %s', $endpointId, $type));
     }
-
+    
     /**
-     * Endpoint ID getter
-     *
-     * @param integer $hostId
-     * @param integer $type
-     * @param string $relationType
-     * @return string|null
+     * @inheritDoc
      */
-    public function getEndpointId($hostId, $type, $relationType = null)
+    public function getEndpointId(int $type, int $hostId) : ?string
     {
-        // @todo: type 16 (Image) switch via $relationType
-
         return $this->db->fetchSingle(sprintf('SELECT endpoint FROM mapping WHERE host = %s AND type = %s', $hostId, $type));
     }
-
+    
     /**
-     * Save link to database
-     *
-     * @param string $endpointId
-     * @param integer $hostId
-     * @param integer $type
-     * @return boolean
+     * @inheritDoc
      */
-    public function save($endpointId, $hostId, $type)
+    public function save(int $type, string $endpointId, int $hostId) : bool
     {
         $id = $this->db->insert(sprintf('INSERT INTO mapping (endpoint, host, type) VALUES (%s, %s, %s)', $endpointId, $hostId, $type));
-
+    
         return $id !== false;
     }
-
+    
     /**
-     * Delete link from database
-     *
-     * @param string $endpointId
-     * @param integer $hostId
-     * @param integer $type
-     * @return boolean
+     * @inheritDoc
      */
-    public function delete($endpointId = null, $hostId = null, $type)
+    public function delete(int $type, string $endpointId = null, int $hostId = null) : bool
     {
         $where = '';
         if ($endpointId !== null && $hostId !== null) {
@@ -84,27 +63,15 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
         } elseif ($hostId !== null) {
             $where = sprintf('WHERE host = %s AND type = %s', $hostId, $type);
         }
-
+    
         return $this->db->query(sprintf('DELETE FROM mapping %s'), $where);
     }
-
+    
     /**
-     * Clears the entire link table
-     *
-     * @return boolean
+     * @inheritDoc
      */
-    public function clear()
+    public function clear(int $type = null) : bool
     {
         return $this->db->query('DELETE FROM mapping');
-    }
-
-    /**
-     * Garbage Collect the entire link table
-     *
-     * @return boolean
-     */
-    public function gc()
-    {
-        return true;
     }
 }

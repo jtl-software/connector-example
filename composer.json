@@ -1,17 +1,21 @@
 {
-  "name" : "jtl/connector-example",
-  "type" : "project",
-  "description" : "JTL-Connector Example endpoint",
-  "keywords" : ["jtl", "connector", "example"],
-  "homepage" : "https://www.jtl-software.de",
-  "license" : "LGPL-3.0-or-later",
-  "require" : {
-    "php" : ">=5.6.0",
-	"jtl/connector": "^2.6"
+  "name": "root/example-connector-new",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Niklas Kokoschka",
+      "email": "niklas.kokoschka@jtl-software.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "jtl/connector": "dev-develop",
+    "ext-pdo": "*"
   },
-  "autoload" : {
-    "psr-4" : {
-      "Jtl\\Connector\\Example\\" : "src/"
+  "autoload": {
+    "psr-4": {
+      "Jtl\\Connector\\Example\\": "src/"
     }
   }
 }

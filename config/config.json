@@ -1,0 +1,11 @@
+{
+    "connector_dir": "/var/www/html/testshops/example-connector-new",
+    "log_level": "info",
+    "main_language": "de",
+/*    "log_dir": "/var/www/html/testshops/example-connector-new/var/log", //Show a custom path
+    "cache_dir": "/var/www/html/testshops/example-connector-new/var/cache",
+    "plugins_dir": "/var/www/html/testshops/example-connector-new/plugins",
+    "features_path": "/var/www/html/testshops/example-connector-new/config/features.json",*/
+    "debug": false,
+    "token": "123456789"
+}
