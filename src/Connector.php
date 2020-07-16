@@ -21,31 +21,25 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  */
 class Connector implements ConnectorInterface
 {
-    protected $checkToken;
+    protected $config;
     
     public function initialize(ConfigInterface $config, Container $container, EventDispatcher $eventDispatcher) : void
     {
         if (!$config->has('token')){
             $config->set("token", "123456789");
-            $config->write();
         }
         
-        //Config Schema Example
-        $configSchema = new ConfigSchema;
-        $configSchema->setParameter(new ConfigParameter("token", "string", true));
-        $configSchema->validateConfig($config);
-        
-        $this->checkToken = $config->get("token");
+        $this->config = $config;
     }
     
     public function getPrimaryKeyMapper() : PrimaryKeyMapperInterface
     {
-        return new PrimaryKeyMapper;
+        return new PrimaryKeyMapper($this->config);
     }
 
     public function getTokenValidator() : TokenValidatorInterface
     {
-        return new TokenValidator($this->checkToken);
+        return new TokenValidator($this->config);
     }
 
     public function getControllerNamespace() : string
