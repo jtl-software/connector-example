@@ -85,7 +85,7 @@ class PrimaryKeyMapper implements IPrimaryKeyMapper
             $where = sprintf('WHERE host = %s AND type = %s', $hostId, $type);
         }
 
-        return $this->db->query(sprintf('DELETE FROM mapping %s'), $where);
+        return $this->db->query(sprintf('DELETE FROM mapping %s', $where));
     }
 
     /**
