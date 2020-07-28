@@ -12,10 +12,11 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
     
     public function __construct(FileConfig $config)
     {
+        $dbParams = $config->get("db");
         $this->db = new PDO(
-            sprintf("mysql:host=%s;dbname=%s", $config->get(["dbHost"]), $config->get(["dbName"])),
-            $config->get(["dbUsername"]),
-            $config->get(["dbPassword"]),
+            sprintf("mysql:host=%s;dbname=%s", $dbParams["host"], $dbParams["name"]),
+            $dbParams["username"],
+            $dbParams["password"],
             array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)
         );
     }
@@ -25,7 +26,10 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
      */
     public function getHostId(int $type, string $endpointId) : ?int
     {
-        return $this->db->fetchSingle(sprintf('SELECT host FROM mapping WHERE endpoint = %s AND type = %s', $endpointId, $type));
+        $statement = $this->db->prepare(sprintf('SELECT host FROM mapping WHERE endpoint = %s AND type = %s', $endpointId, $type));
+        $statement->execute();
+        
+        return $statement->fetch();
     }
     
     /**
@@ -33,7 +37,10 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
      */
     public function getEndpointId(int $type, int $hostId) : ?string
     {
-        return $this->db->fetchSingle(sprintf('SELECT endpoint FROM mapping WHERE host = %s AND type = %s', $hostId, $type));
+        $statement = $this->db->prepare(sprintf('SELECT endpoint FROM mapping WHERE host = %s AND type = %s', $hostId, $type));
+        $statement->execute();
+    
+        return $statement->fetch();
     }
     
     /**
@@ -41,9 +48,10 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
      */
     public function save(int $type, string $endpointId, int $hostId) : bool
     {
-        $id = $this->db->insert(sprintf('INSERT INTO mapping (endpoint, host, type) VALUES (%s, %s, %s)', $endpointId, $hostId, $type));
+        $statement = $this->db->prepare(sprintf('INSERT INTO mapping (endpoint, host, type) VALUES (%s, %s, %s)', $endpointId, $hostId, $type));
+        $statement->execute();
     
-        return $id !== false;
+        return $statement->fetch() !== false;
     }
     
     /**
@@ -60,7 +68,10 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
             $where = sprintf('WHERE host = %s AND type = %s', $hostId, $type);
         }
     
-        return $this->db->query(sprintf('DELETE FROM mapping %s'), $where);
+        $statement = $this->db->prepare(sprintf('DELETE FROM mapping %s', $where));
+        $statement->execute();
+    
+        return $statement->fetch();
     }
     
     /**
@@ -68,6 +79,9 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
      */
     public function clear(int $type = null) : bool
     {
-        return $this->db->query('DELETE FROM mapping');
+        $statement = $this->db->prepare('DELETE FROM mapping');
+        $statement->execute();
+    
+        return $statement->fetch();
     }
 }

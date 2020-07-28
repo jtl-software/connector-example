@@ -69,14 +69,14 @@ class GlobalDataController implements PullInterface
             (new CustomerGroup())->setId($id1)
                 ->setIsDefault(true)
                 ->setApplyNetPrice(false)
-                ->addI18n((new CustomerGroupI18n())->setLanguageISO('ger')->setName('Endkunde'))
+                ->addI18n((new CustomerGroupI18n())->setName('Endkunde'))
         );
     
         $globalData->addCustomerGroup(
             (new CustomerGroup())->setId($id2)
                 ->setIsDefault(false)
                 ->setApplyNetPrice(true)
-                ->addI18n((new CustomerGroupI18n())->setLanguageISO('ger')->setName('Haendler'))
+                ->addI18n((new CustomerGroupI18n())->setName('Haendler'))
         );
     
         // TaxRates

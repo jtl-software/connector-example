@@ -1,11 +1,9 @@
 {
-    "connector_dir": "/var/www/html/testshops/example-connector-new",
-    "log_level": "info",
-    "main_language": "de",
-    "debug": false,
-    "dbHost": "localhost",
-    "dbName": "example_connector_db",
-    "dbUsername": "root",
-    "dbPassword": "jtlgmbh",
+    "db": {
+        "host": "localhost",
+        "name": "example_connector_db",
+        "username": "root",
+        "password": "jtlgmbh"
+    },
     "token": "123456789"
 }
