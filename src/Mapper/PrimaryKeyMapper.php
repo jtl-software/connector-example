@@ -2,7 +2,6 @@
 
 namespace Jtl\Connector\Example\Mapper;
 
-use Jtl\Connector\Core\Config\FileConfig;
 use Jtl\Connector\Core\Mapper\PrimaryKeyMapperInterface;
 use PDO;
 
@@ -10,15 +9,9 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
 {
     protected $db;
     
-    public function __construct(FileConfig $config)
+    public function __construct(PDO $db)
     {
-        $dbParams = $config->get("db");
-        $this->db = new PDO(
-            sprintf("mysql:host=%s;dbname=%s", $dbParams["host"], $dbParams["name"]),
-            $dbParams["username"],
-            $dbParams["password"],
-            array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)
-        );
+        $this->db = $db;
     }
     
     /**

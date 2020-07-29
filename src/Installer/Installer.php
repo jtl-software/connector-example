@@ -2,7 +2,7 @@
 
 namespace Jtl\Connector\Example\Installer;
 
-use Jtl\Connector\Core\Config\FileConfig;
+use Noodlehaus\ConfigInterface;
 use PDO;
 
 class Installer
@@ -10,7 +10,7 @@ class Installer
     protected $db;
     protected $config;
     
-    public function __construct(FileConfig $config)
+    public function __construct(ConfigInterface $config)
     {
         $dbParams = $config->get("db");
         $this->db = new PDO(
@@ -23,7 +23,7 @@ class Installer
     }
     
     public function run() {
-        $scripts = glob(CONNECTOR_DIR . "/src/Installer/scripts/*");
+        $scripts = glob(sprintf("%s/scripts/*.sql", CONNECTOR_DIR));
     
         foreach ($scripts as $script) {
             $statement = $this->db->prepare(file_get_contents($script));

@@ -15,7 +15,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Jtl\\Connector\\Example\\": "src/"
+      "Jtl\\Connector\\Example\\": "src/",
+      "DemoPlugin\\": "plugins/DemoPlugin/"
     }
   }
 }
