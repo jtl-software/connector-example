@@ -32,8 +32,8 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
     {
         $statement = $this->db->prepare(sprintf('SELECT endpoint FROM mapping WHERE host = %s AND type = %s', $hostId, $type));
         $statement->execute();
-    
-        return $statement->fetch();
+        
+        return $statement->fetch()['endpoint'];
     }
     
     /**
@@ -61,7 +61,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
             $where = sprintf('WHERE host = %s AND type = %s', $hostId, $type);
         }
     
-        $statement = $this->db->prepare(sprintf('DELETE FROM mapping %s', $where));
+        $statement = $this->db->prepare(sprintf('DELETE IGNORE FROM mapping %s', $where));
         $statement->execute();
     
         return $statement->fetch();

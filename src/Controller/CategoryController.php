@@ -12,65 +12,32 @@ use Jtl\Connector\Core\Model\Identity;
 use Jtl\Connector\Core\Model\QueryFilter;
 use Jtl\Connector\Core\Model\TranslatableAttribute;
 use Jtl\Connector\Core\Model\TranslatableAttributeI18n;
+use stdClass;
 
-class CategoryController implements PullInterface, PushInterface
+class CategoryController extends AbstractController implements PullInterface, PushInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function pull(QueryFilter $queryFilter) : array
-    {
-        $result = [];
-        $limit = $queryFilter->getLimit();
-    
-        $category = new Category();
-    
-        // ***************************************
-        // * Static values for presentation only *
-        // ***************************************
-    
-        $id1 = new Identity(1);
-        $id2 = new Identity(2);
-    
-        //Attributes
-        $category->addAttribute((new TranslatableAttribute)
-            ->addI18n((new TranslatableAttributeI18n)
-                ->setName('TestAttribute')
-                ->setValue(1)
-                ->setLanguageIso('ger')
-            )
-        );
-        
-        //I18n
-        $category->addI18n((new CategoryI18n)
-            ->setName('Test Category')
-            ->setTitleTag('test')
-            ->setMetaKeywords('test')
-            ->setMetaDescription('this is a test')
-            ->setUrlPath('/test')
-        );
-        
-        // CustomerGroups
-        $category->addCustomerGroup(
-            (new CategoryCustomerGroup())
-                ->setCustomerGroupId($id1)
-                ->setDiscount(0)
-        );
-        
-        $category->setIsActive(true);
-        $category->setLevel(0);
-        $category->setSort(0);
-        
-        $result[] = $category;
-    
-        return $result;
-    }
-    
     /**
      * @inheritDoc
      */
     public function push(AbstractDataModel $model) : AbstractDataModel
     {
+        $statement = $this->database->prepare("INSERT INTO categories (id, name, parent_id, status) VALUES (NULL, ?, ?, ?)");
+        $statement->execute([
+            $model->getI18ns()[0]->getName(),
+            $model->getParentCategoryId()->getEndpoint() === "" ? 0 : $model->getParentCategoryId()->getEndpoint(),
+            (int)$model->getIsActive(),
+        ]);
+        
+        $endpointId = $this->database->lastInsertId();
+        $model->getId()->setEndpoint($endpointId);
+        
         return $model;
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public function pull(QueryFilter $queryFilter) : array
+    {
     }
 }

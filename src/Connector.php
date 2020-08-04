@@ -5,6 +5,7 @@ namespace Jtl\Connector\Example;
 use DI\Container;
 use Jtl\Connector\Core\Authentication\TokenValidatorInterface;
 use Jtl\Connector\Core\Connector\ConnectorInterface;
+use Jtl\Connector\Core\Exception\DatabaseException;
 use Jtl\Connector\Core\Mapper\PrimaryKeyMapperInterface;
 use Jtl\Connector\Example\Authentication\TokenValidator;
 use Jtl\Connector\Example\Installer\Installer;
@@ -31,6 +32,7 @@ class Connector implements ConnectorInterface
             $installer = new Installer($this->config);
             $installer->run();
         }
+        $container->set(PDO::class, $this->db);
     }
     
     public function getPrimaryKeyMapper() : PrimaryKeyMapperInterface
@@ -68,10 +70,14 @@ class Connector implements ConnectorInterface
     {
         $dbParams = $this->config->get("db");
         
-        return new PDO(
-            sprintf("mysql:host=%s;dbname=%s", $dbParams["host"], $dbParams["name"]),
+        $db = new PDO(
+            sprintf("mysql:host=%s;dbname=%s", $dbParams["host"], "example_connector_db"),
             $dbParams["username"],
-            $dbParams["password"]
+            $dbParams["password"]/*,
+            [PDO::ERRMODE_EXCEPTION]*/
         );
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        return $db;
     }
 }
