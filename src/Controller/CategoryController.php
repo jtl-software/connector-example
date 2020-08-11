@@ -4,15 +4,11 @@ namespace Jtl\Connector\Example\Controller;
 
 use Jtl\Connector\Core\Controller\PullInterface;
 use Jtl\Connector\Core\Controller\PushInterface;
+use Jtl\Connector\Core\Definition\Model;
 use Jtl\Connector\Core\Model\AbstractDataModel;
 use Jtl\Connector\Core\Model\Category;
-use Jtl\Connector\Core\Model\CategoryCustomerGroup;
 use Jtl\Connector\Core\Model\CategoryI18n;
-use Jtl\Connector\Core\Model\Identity;
 use Jtl\Connector\Core\Model\QueryFilter;
-use Jtl\Connector\Core\Model\TranslatableAttribute;
-use Jtl\Connector\Core\Model\TranslatableAttributeI18n;
-use stdClass;
 
 class CategoryController extends AbstractController implements PullInterface, PushInterface
 {
@@ -39,5 +35,37 @@ class CategoryController extends AbstractController implements PullInterface, Pu
      */
     public function pull(QueryFilter $queryFilter) : array
     {
+        $return = [];
+        
+        $statement = $this->database->prepare("
+            SELECT c.* FROM categories c
+            LEFT JOIN mapping m ON c.id = m.endpoint
+            WHERE m.host IS NULL OR m.type != ?
+        ");
+        
+        $statement->execute([
+            Model::getIdentityType("Category")
+        ]);
+    
+        $categories = $statement->fetchAll();
+    
+        foreach ($categories as $category) {
+            $return[] = $this->createJtlCategory($category);
+        }
+        
+        return $return;
+    }
+    
+    protected function createJtlCategory($category) {
+        $jtlCategory = (new Category)->setIsActive($category["status"]);
+        
+        $jtlCategory->getParentCategoryId()->setEndpoint($category["parent_id"]);
+        
+        $jtlCategory->addI18n(
+            (new CategoryI18n())
+                ->setName($category["name"])
+        );
+        
+        return $jtlCategory;
     }
 }
