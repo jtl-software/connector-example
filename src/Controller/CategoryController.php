@@ -17,15 +17,30 @@ class CategoryController extends AbstractController implements PullInterface, Pu
      */
     public function push(AbstractDataModel $model) : AbstractDataModel
     {
-        $statement = $this->database->prepare("INSERT INTO categories (id, name, parent_id, status) VALUES (NULL, ?, ?, ?)");
+        $statement = $this->database->prepare("INSERT INTO categories (id, parent_id, status) VALUES (NULL, ?, ?)");
         $statement->execute([
-            $model->getI18ns()[0]->getName(),
             $model->getParentCategoryId()->getEndpoint() === "" ? 0 : $model->getParentCategoryId()->getEndpoint(),
             (int)$model->getIsActive(),
         ]);
         
         $endpointId = $this->database->lastInsertId();
         $model->getId()->setEndpoint($endpointId);
+        
+        $statement = $this->database->prepare("
+            INSERT INTO category_translations (id, category_id, name, description, title_tag, meta_description, meta_keywords, language_iso)
+            VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        foreach ($model->getI18ns() as $i18n) {
+            $statement->execute([
+                $endpointId,
+                $i18n->getName(),
+                $i18n->getDescription(),
+                $i18n->getTitleTag(),
+                $i18n->getMetaDescription(),
+                $i18n->getMetaKeywords(),
+                $i18n->getLanguageIso(),
+            ]);
+        }
         
         return $model;
     }
@@ -38,17 +53,17 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         $return = [];
         
         $statement = $this->database->prepare("
-            SELECT c.* FROM categories c
+            SELECT * FROM categories c
             LEFT JOIN mapping m ON c.id = m.endpoint
             WHERE m.host IS NULL OR m.type != ?
         ");
         
         $statement->execute([
-            Model::getIdentityType("Category")
+            Model::getIdentityType("Category"),
         ]);
-    
+        
         $categories = $statement->fetchAll();
-    
+        
         foreach ($categories as $category) {
             $return[] = $this->createJtlCategory($category);
         }
@@ -56,16 +71,33 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         return $return;
     }
     
-    protected function createJtlCategory($category) {
+    protected function createJtlCategory($category)
+    {
         $jtlCategory = (new Category)->setIsActive($category["status"]);
-        
         $jtlCategory->getParentCategoryId()->setEndpoint($category["parent_id"]);
         
-        $jtlCategory->addI18n(
-            (new CategoryI18n())
-                ->setName($category["name"])
-        );
+        $statement = $this->database->prepare("
+            SELECT * FROM category_translations t
+            LEFT JOIN categories c ON c.id = t.category_id
+        ");
+        $statement->execute();
+        $i18ns = $statement->fetchAll();
+        
+        foreach ($i18ns as $i18n) {
+            $jtlCategory->addI18n($this->createJtlCategoryI18n($i18n));
+        }
         
         return $jtlCategory;
+    }
+    
+    protected function createJtlCategoryI18n($i18n)
+    {
+        return (new CategoryI18n())
+            ->setName($i18n["name"])
+            ->setDescription($i18n["description"])
+            ->setTitleTag($i18n["title_tag"])
+            ->setMetaDescription($i18n["meta_description"])
+            ->setMetaKeywords($i18n["meta_keywords"])
+            ->setLanguageIso($i18n["language_iso"]);
     }
 }
