@@ -10,6 +10,7 @@ use Jtl\Connector\Core\Model\Category;
 use Jtl\Connector\Core\Model\CategoryI18n;
 use Jtl\Connector\Core\Model\QueryFilter;
 
+//Creating the controller for the entity that the controller should support using the method interfaced to define supported methods
 class CategoryController extends AbstractController implements PullInterface, PushInterface
 {
     /**
