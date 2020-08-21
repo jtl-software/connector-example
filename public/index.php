@@ -1,8 +1,5 @@
 <?php
-/**
- * @copyright 2010-2015 JTL-Software GmbH
- * @package Jtl\Connector\Example
- */
+
 require_once dirname(__DIR__) . "/bootstrap.php";
 
 use Jtl\Connector\Core\Application\Application;
@@ -17,12 +14,12 @@ $application = null;
 $config = new FileConfig(sprintf('%s/config/config.json', CONNECTOR_DIR));
 
 //Setting up a custom config schema that checks the config file for the defined properties
-$configSchema = new ConfigSchema;
-$configSchema->setParameter(new ConfigParameter("token", "string", true));
-$configSchema->setParameter(new ConfigParameter("db.host", "string", true));
-$configSchema->setParameter(new ConfigParameter("db.name", "string", true));
-$configSchema->setParameter(new ConfigParameter("db.username", "string", true));
-$configSchema->setParameter(new ConfigParameter("db.password", "string", true));
+$configSchema = (new ConfigSchema)
+    ->setParameter(new ConfigParameter("token", "string", true))
+    ->setParameter(new ConfigParameter("db.host", "string", true))
+    ->setParameter(new ConfigParameter("db.name", "string", true))
+    ->setParameter(new ConfigParameter("db.username", "string", true))
+    ->setParameter(new ConfigParameter("db.password", "string", true));
 
 //Instantiating the Connector class which holds information and acts like a Toolbox the the application
 $connector = new Connector;

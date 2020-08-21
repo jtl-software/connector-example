@@ -452,22 +452,21 @@
         }
     },
     "flags": {
-        "can_reactivate_customer_order": false,
-        "can_update_customer_order": false,
-        "category_images_supported": false,
-        "config_group_images_supported": false,
-        "customer_order_partially_payable": false,
-        "free_field_supported": false,
-        "manufacturer_images_supported": false,
-        "needs_finish_call": false,
-        "product_images_supported": false,
-        "product_variation_value_images_supported": false,
-        "set_articles_supported": false,
+        "var_combination_child_first": false,
+        "product_images_supported": true,
+        "category_images_supported": true,
+        "manufacturer_images_supported": true,
         "specific_images_supported": false,
         "specific_value_images_supported": false,
-        "var_combination_child_first": false,
-        "variation_combinations_supported": false,
+        "config_group_images_supported": false,
+        "product_variation_value_images_supported": false,
         "variation_products_supported": false,
-        "translated_attributes_supported": false
+        "variation_combinations_supported": true,
+        "set_articles_supported": false,
+        "free_field_supported": false,
+        "needs_category_root": false,
+        "translated_attributes_supported": false,
+        "send_all_acks": false,
+        "disable_statistics": false
     }
 }

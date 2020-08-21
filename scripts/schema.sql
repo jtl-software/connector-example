@@ -19,10 +19,10 @@ CREATE TABLE IF NOT EXISTS `example_connector_db`.`category_translations`
     `id`               INT          NOT NULL AUTO_INCREMENT,
     `category_id`      INT          NOT NULL,
     `name`             VARCHAR(255) NOT NULL,
-    `description`      VARCHAR(255) NULL,
+    `description`      TEXT         NULL,
     `title_tag`        VARCHAR(255) NULL,
     `meta_description` VARCHAR(255) NULL,
     `meta_keywords`    VARCHAR(255) NULL,
-    `language_iso`     VARCHAR(255) NULL,
+    `language_iso`     VARCHAR(3)   NULL,
     PRIMARY KEY (`id`)
 );

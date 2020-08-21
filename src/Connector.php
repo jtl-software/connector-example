@@ -4,6 +4,7 @@ namespace Jtl\Connector\Example;
 
 use DI\Container;
 use Jtl\Connector\Core\Authentication\TokenValidatorInterface;
+use Jtl\Connector\Core\Config\ConfigSchema;
 use Jtl\Connector\Core\Connector\ConnectorInterface;
 use Jtl\Connector\Core\Mapper\PrimaryKeyMapperInterface;
 use Jtl\Connector\Example\Authentication\TokenValidator;
@@ -29,8 +30,8 @@ class Connector implements ConnectorInterface
         
         //Checks if the connector-token is set to control if the installing routine should be executed
         if (!$this->config->has("token")) {
-            $installer = new Installer($this->db);
-            $installer->run();
+            $installer = new Installer($this->db, ConfigSchema::CONNECTOR_DIR);
+            $installer->run($config->get());
             
             $this->config->set("token", "123456789");
             $this->config->write();

@@ -6,21 +6,22 @@ use PDO;
 
 class Installer
 {
-    protected $db;
-    protected $config;
+    protected $pdo;
+    protected $connectorDir;
     
-    public function __construct(PDO $database)
+    public function __construct(PDO $pdo, string $connectorDir)
     {
-        $this->db = $database;
+        $this->pdo = $pdo;
+        $this->connectorDir = $connectorDir;
     }
     
     public function run()
     {
         //Getting and executing all install scripts to setup the needed connector mapping tables as well as demo shop tables
-        $scripts = glob(sprintf("%s/scripts/*.sql", CONNECTOR_DIR));
+        $scripts = glob(sprintf("%s/scripts/*.sql", $this->connectorDir));
         
         foreach ($scripts as $script) {
-            $statement = $this->db->prepare(file_get_contents($script));
+            $statement = $this->pdo->prepare(file_get_contents($script));
             $statement->execute();
         }
     }

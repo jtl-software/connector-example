@@ -3,15 +3,14 @@
 namespace Jtl\Connector\Example\Authentication;
 
 use Jtl\Connector\Core\Authentication\TokenValidatorInterface;
-use Noodlehaus\ConfigInterface;
 
 class TokenValidator implements TokenValidatorInterface
 {
     protected $checkToken;
     
-    public function __construct(ConfigInterface $config)
+    public function __construct(String $token)
     {
-        $this->checkToken = $config->get("token");
+        $this->checkToken = $token;
     }
     
     /**

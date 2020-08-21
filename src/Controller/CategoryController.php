@@ -4,7 +4,7 @@ namespace Jtl\Connector\Example\Controller;
 
 use Jtl\Connector\Core\Controller\PullInterface;
 use Jtl\Connector\Core\Controller\PushInterface;
-use Jtl\Connector\Core\Definition\Model;
+use Jtl\Connector\Core\Definition\IdentityType;
 use Jtl\Connector\Core\Model\AbstractDataModel;
 use Jtl\Connector\Core\Model\Category;
 use Jtl\Connector\Core\Model\CategoryI18n;
@@ -18,16 +18,16 @@ class CategoryController extends AbstractController implements PullInterface, Pu
      */
     public function push(AbstractDataModel $model) : AbstractDataModel
     {
-        $statement = $this->database->prepare("INSERT INTO categories (id, parent_id, status) VALUES (NULL, ?, ?)");
+        $statement = $this->pdo->prepare("INSERT INTO categories (id, parent_id, status) VALUES (NULL, ?, ?)");
         $statement->execute([
             $model->getParentCategoryId()->getEndpoint() === "" ? 0 : $model->getParentCategoryId()->getEndpoint(),
             (int)$model->getIsActive(),
         ]);
         
-        $endpointId = $this->database->lastInsertId();
+        $endpointId = $this->pdo->lastInsertId();
         $model->getId()->setEndpoint($endpointId);
         
-        $statement = $this->database->prepare("
+        $statement = $this->pdo->prepare("
             INSERT INTO category_translations (id, category_id, name, description, title_tag, meta_description, meta_keywords, language_iso)
             VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)
         ");
@@ -53,14 +53,14 @@ class CategoryController extends AbstractController implements PullInterface, Pu
     {
         $return = [];
         
-        $statement = $this->database->prepare("
+        $statement = $this->pdo->prepare("
             SELECT * FROM categories c
             LEFT JOIN mapping m ON c.id = m.endpoint
             WHERE m.host IS NULL OR m.type != ?
         ");
         
         $statement->execute([
-            Model::getIdentityType("Category"),
+            IdentityType::CATEGORY
         ]);
         
         $categories = $statement->fetchAll();
@@ -72,12 +72,12 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         return $return;
     }
     
-    protected function createJtlCategory($category)
+    protected function createJtlCategory(array $category) : Category
     {
         $jtlCategory = (new Category)->setIsActive($category["status"]);
         $jtlCategory->getParentCategoryId()->setEndpoint($category["parent_id"]);
         
-        $statement = $this->database->prepare("
+        $statement = $this->pdo->prepare("
             SELECT * FROM category_translations t
             LEFT JOIN categories c ON c.id = t.category_id
         ");
@@ -91,7 +91,7 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         return $jtlCategory;
     }
     
-    protected function createJtlCategoryI18n($i18n)
+    protected function createJtlCategoryI18n(array $i18n) : CategoryI18n
     {
         return (new CategoryI18n())
             ->setName($i18n["name"])
