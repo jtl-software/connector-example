@@ -12,6 +12,7 @@ use Jtl\Connector\Core\Model\Category;
 use Jtl\Connector\Core\Model\CategoryI18n;
 use Jtl\Connector\Core\Model\Identity;
 use Jtl\Connector\Core\Model\QueryFilter;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Creating the controller for the entity that the controller should support using the method interfaced to define supported methods
@@ -44,87 +45,36 @@ class CategoryController extends AbstractController implements PullInterface, Pu
     {
         /** @var Category $model */
         $endpointId = $model->getId()->getEndpoint();
-        $endpointId = $this->saveCategory($model, !empty($endpointId) ? $endpointId : null);
+
+        if (empty($endpointId)) {
+            $endpointId = Uuid::uuid4()->getHex()->toString();
+            $model->getId()->setEndpoint($endpointId);
+        }
+
+        $statement = $this->pdo->prepare("INSERT INTO categories (id, parent_id, status) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE id = ?");
+        $statement->execute([
+            $endpointId,
+            $model->getParentCategoryId()->getEndpoint() === "" ? 0 : $model->getParentCategoryId()->getEndpoint(),
+            (int)$model->getIsActive(),
+            $endpointId
+        ]);
 
         foreach ($model->getI18ns() as $i18n) {
-            $statement = $this->pdo->prepare("SELECT * FROM category_translations WHERE category_id = ? AND language_iso = ?");
+            $statement = $this->pdo->prepare("INSERT INTO category_translations (category_id, name, description, title_tag, meta_description, meta_keywords, language_iso) VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE category_id = ?, language_iso = ?");
             $statement->execute([
+                $endpointId,
+                $i18n->getName(),
+                $i18n->getDescription(),
+                $i18n->getTitleTag(),
+                $i18n->getMetaDescription(),
+                $i18n->getMetaKeywords(),
+                $i18n->getLanguageIso(),
                 $endpointId,
                 $i18n->getLanguageIso()
             ]);
-
-            $categoryTranslation = $statement->fetch(\PDO::FETCH_ASSOC);
-            if (!empty($categoryTranslation)) {
-                $this->saveTranslation($i18n, $endpointId, true);
-            } else {
-                $this->saveTranslation($i18n, $endpointId);
-            }
         }
-
 
         return $model;
-    }
-
-    /**
-     * @param Category $category
-     * @param int|null $endpointId
-     * @return int
-     */
-    protected function saveCategory(Category $category, int $endpointId = null): int
-    {
-        if (!is_null($endpointId)) {
-            $sql = "UPDATE categories SET parent_id = ?, status = ? WHERE id = ?";
-            $params = [
-                $category->getParentCategoryId()->getEndpoint() === "" ? 0 : $category->getParentCategoryId()->getEndpoint(),
-                (int)$category->getIsActive(),
-                $endpointId
-            ];
-        } else {
-            $sql = "INSERT INTO categories (id, parent_id, status) VALUES (NULL, ?, ?)";
-            $params = [
-                $category->getParentCategoryId()->getEndpoint() === "" ? 0 : $category->getParentCategoryId()->getEndpoint(),
-                (int)$category->getIsActive(),
-            ];
-        }
-
-        $statement = $this->pdo->prepare($sql);
-        $statement->execute($params);
-
-        if (is_null($endpointId)) {
-            $endpointId = $this->pdo->lastInsertId();
-        }
-
-        $category->getId()->setEndpoint($endpointId);
-
-        return $endpointId;
-    }
-
-    /**
-     * @param CategoryI18n $categoryI18n
-     * @param int $endpointId
-     * @param bool $isUpdate
-     * @return bool
-     */
-    protected function saveTranslation(CategoryI18n $categoryI18n, int $endpointId, bool $isUpdate = false): bool
-    {
-        if ($isUpdate === true) {
-            $query = "UPDATE category_translations SET name = ?, description = ?, title_tag = ?, meta_description = ?, meta_keywords = ?
-            WHERE language_iso = ? AND category_id = ?";
-        } else {
-            $query = "INSERT INTO category_translations (name, description, title_tag, meta_description, meta_keywords, language_iso, category_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
-        }
-        $statement = $this->pdo->prepare($query);
-
-        return $statement->execute([
-            $categoryI18n->getName(),
-            $categoryI18n->getDescription(),
-            $categoryI18n->getTitleTag(),
-            $categoryI18n->getMetaDescription(),
-            $categoryI18n->getMetaKeywords(),
-            $categoryI18n->getLanguageIso(),
-            $endpointId
-        ]);
     }
 
     /**

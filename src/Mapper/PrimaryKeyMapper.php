@@ -20,68 +20,70 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
     {
         $this->pdo = $pdo;
     }
-    
+
     /**
      * @inheritDoc
      */
-    public function getHostId(int $type, string $endpointId) : ?int
+    public function getHostId(int $type, string $endpointId): ?int
     {
-        $statement = $this->pdo->prepare(sprintf('SELECT host FROM mapping WHERE endpoint = %s AND type = %s', $endpointId, $type));
-        $statement->execute();
-        
+        $statement = $this->pdo->prepare('SELECT host FROM mapping WHERE endpoint = ? AND type = ?');
+        $statement->execute([$endpointId, $type]);
+
         return $statement->fetch();
     }
-    
+
     /**
      * @inheritDoc
      */
-    public function getEndpointId(int $type, int $hostId) : ?string
+    public function getEndpointId(int $type, int $hostId): ?string
     {
-        $statement = $this->pdo->prepare(sprintf('SELECT endpoint FROM mapping WHERE host = %s AND type = %s', $hostId, $type));
-        $statement->execute();
-        
+        $statement = $this->pdo->prepare('SELECT endpoint FROM mapping WHERE host = ? AND type = ?');
+        $statement->execute([$hostId, $type]);
+
         return $statement->fetch()['endpoint'];
     }
-    
+
     /**
      * @inheritDoc
      */
-    public function save(int $type, string $endpointId, int $hostId) : bool
+    public function save(int $type, string $endpointId, int $hostId): bool
     {
-        $statement = $this->pdo->prepare(sprintf('INSERT INTO mapping (endpoint, host, type) VALUES (%s, %s, %s)', $endpointId, $hostId, $type));
-        $statement->execute();
-    
-        return $statement->fetch() !== false;
+        $statement = $this->pdo->prepare('INSERT INTO mapping (endpoint, host, type) VALUES (?, ?, ?)');
+        return $statement->execute([$endpointId, $hostId, $type]);
     }
-    
+
     /**
      * @inheritDoc
      */
-    public function delete(int $type, string $endpointId = null, int $hostId = null) : bool
+    public function delete(int $type, string $endpointId = null, int $hostId = null): bool
     {
         $where = '';
+        $params = [];
+
         if ($endpointId !== null && $hostId !== null) {
-            $where = sprintf('WHERE endpoint = %s AND host = %s AND type = %s', $endpointId, $hostId, $type);
+            $where = 'WHERE endpoint = ? AND host = ? AND type = ?';
+            $params = [$endpointId, $hostId, $type];
         } elseif ($endpointId !== null) {
-            $where = sprintf('WHERE endpoint = %s AND type = %s', $endpointId, $type);
+            $where = 'WHERE endpoint = ? AND type = ?';
+            $params = [$endpointId, $type];
         } elseif ($hostId !== null) {
-            $where = sprintf('WHERE host = %s AND type = %s', $hostId, $type);
+            $where = 'WHERE host = ? AND type = ?';
+            $params = [$hostId, $type];
         }
-    
+
         $statement = $this->pdo->prepare(sprintf('DELETE IGNORE FROM mapping %s', $where));
-        $statement->execute();
-    
-        return $statement->fetch();
+
+        return $statement->execute($params);
     }
-    
+
     /**
      * @inheritDoc
      */
-    public function clear(int $type = null) : bool
+    public function clear(int $type = null): bool
     {
         $statement = $this->pdo->prepare('DELETE FROM mapping');
         $statement->execute();
-    
+
         return $statement->fetch();
     }
 }
