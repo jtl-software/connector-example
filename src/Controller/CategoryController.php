@@ -10,7 +10,12 @@ use Jtl\Connector\Core\Model\Category;
 use Jtl\Connector\Core\Model\CategoryI18n;
 use Jtl\Connector\Core\Model\QueryFilter;
 
-//Creating the controller for the entity that the controller should support using the method interfaced to define supported methods
+/**
+ * Creating the controller for the entity that the controller should support using the method interfaced to define supported methods
+ *
+ * Class CategoryController
+ * @package Jtl\Connector\Example\Controller
+ */
 class CategoryController extends AbstractController implements PullInterface, PushInterface
 {
     /**
@@ -71,7 +76,11 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         
         return $return;
     }
-    
+
+    /**
+     * @param array $category
+     * @return Category
+     */
     protected function createJtlCategory(array $category) : Category
     {
         $jtlCategory = (new Category)->setIsActive($category["status"]);
@@ -90,7 +99,11 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         
         return $jtlCategory;
     }
-    
+
+    /**
+     * @param array $i18n
+     * @return CategoryI18n
+     */
     protected function createJtlCategoryI18n(array $i18n) : CategoryI18n
     {
         return (new CategoryI18n())

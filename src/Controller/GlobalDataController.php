@@ -21,7 +21,6 @@ class GlobalDataController implements PullInterface
     public function pull(QueryFilter $queryFilter) : array
     {
         $result = [];
-        $limit = $queryFilter->getLimit();
         
         $globalData = new GlobalData;
         

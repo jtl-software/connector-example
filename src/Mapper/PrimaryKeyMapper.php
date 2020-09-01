@@ -7,11 +7,18 @@ use PDO;
 
 class PrimaryKeyMapper implements PrimaryKeyMapperInterface
 {
-    protected $db;
-    
-    public function __construct(PDO $db)
+    /**
+     * @var PDO
+     */
+    protected $pdo;
+
+    /**
+     * PrimaryKeyMapper constructor.
+     * @param PDO $pdo
+     */
+    public function __construct(PDO $pdo)
     {
-        $this->db = $db;
+        $this->pdo = $pdo;
     }
     
     /**
@@ -19,7 +26,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
      */
     public function getHostId(int $type, string $endpointId) : ?int
     {
-        $statement = $this->db->prepare(sprintf('SELECT host FROM mapping WHERE endpoint = %s AND type = %s', $endpointId, $type));
+        $statement = $this->pdo->prepare(sprintf('SELECT host FROM mapping WHERE endpoint = %s AND type = %s', $endpointId, $type));
         $statement->execute();
         
         return $statement->fetch();
@@ -30,7 +37,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
      */
     public function getEndpointId(int $type, int $hostId) : ?string
     {
-        $statement = $this->db->prepare(sprintf('SELECT endpoint FROM mapping WHERE host = %s AND type = %s', $hostId, $type));
+        $statement = $this->pdo->prepare(sprintf('SELECT endpoint FROM mapping WHERE host = %s AND type = %s', $hostId, $type));
         $statement->execute();
         
         return $statement->fetch()['endpoint'];
@@ -41,7 +48,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
      */
     public function save(int $type, string $endpointId, int $hostId) : bool
     {
-        $statement = $this->db->prepare(sprintf('INSERT INTO mapping (endpoint, host, type) VALUES (%s, %s, %s)', $endpointId, $hostId, $type));
+        $statement = $this->pdo->prepare(sprintf('INSERT INTO mapping (endpoint, host, type) VALUES (%s, %s, %s)', $endpointId, $hostId, $type));
         $statement->execute();
     
         return $statement->fetch() !== false;
@@ -61,7 +68,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
             $where = sprintf('WHERE host = %s AND type = %s', $hostId, $type);
         }
     
-        $statement = $this->db->prepare(sprintf('DELETE IGNORE FROM mapping %s', $where));
+        $statement = $this->pdo->prepare(sprintf('DELETE IGNORE FROM mapping %s', $where));
         $statement->execute();
     
         return $statement->fetch();
@@ -72,7 +79,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
      */
     public function clear(int $type = null) : bool
     {
-        $statement = $this->db->prepare('DELETE FROM mapping');
+        $statement = $this->pdo->prepare('DELETE FROM mapping');
         $statement->execute();
     
         return $statement->fetch();

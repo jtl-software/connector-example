@@ -6,11 +6,23 @@ use Jtl\Connector\Core\Authentication\TokenValidatorInterface;
 
 class TokenValidator implements TokenValidatorInterface
 {
-    protected $checkToken;
-    
-    public function __construct(String $token)
+    /**
+     * @var string
+     */
+    protected $token;
+
+    /**
+     * TokenValidator constructor.
+     * @param string $token
+     * @throws \Exception
+     */
+    public function __construct(string $token)
     {
-        $this->checkToken = $token;
+        if ($token === '') {
+            throw new \Exception("Token can not be an empty string");
+        }
+
+        $this->token = $token;
     }
     
     /**
@@ -18,6 +30,6 @@ class TokenValidator implements TokenValidatorInterface
      */
     public function validate(string $token) : bool
     {
-        return $token === $this->checkToken;
+        return $token === $this->token;
     }
 }

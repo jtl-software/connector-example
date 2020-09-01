@@ -6,9 +6,21 @@ use PDO;
 
 class Installer
 {
+    /**
+     * @var PDO
+     */
     protected $pdo;
+
+    /**
+     * @var string
+     */
     protected $connectorDir;
-    
+
+    /**
+     * Installer constructor.
+     * @param PDO $pdo
+     * @param string $connectorDir
+     */
     public function __construct(PDO $pdo, string $connectorDir)
     {
         $this->pdo = $pdo;
