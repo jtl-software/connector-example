@@ -3,7 +3,7 @@
         "Category": {
             "pull": true,
             "push": true,
-            "delete": false
+            "delete": true
         },
         "CategoryAttr": {
             "pull": false,
