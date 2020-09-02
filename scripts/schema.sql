@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `mapping`
 (
-    `endpoint` BINARY(32) NOT NULL,
+    `endpoint` VARBINARY(32) NOT NULL,
     `host`     INT        NOT NULL,
     `type`     INT        NOT NULL,
     PRIMARY KEY (`endpoint`, `type`)
@@ -8,15 +8,15 @@ CREATE TABLE IF NOT EXISTS `mapping`
 
 CREATE TABLE IF NOT EXISTS `categories`
 (
-    `id`        BINARY(32) NOT NULL,
-    `parent_id` INT        NULL,
+    `id`        VARBINARY(32) NOT NULL,
+    `parent_id` VARBINARY(32) NULL,
     `status`    TINYINT    NOT NULL,
     PRIMARY KEY (`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `category_translations`
 (
-    `category_id`      BINARY(32)   NOT NULL,
+    `category_id`      VARBINARY(32)   NOT NULL,
     `language_iso`     VARCHAR(2)   NOT NULL,
     `name`             VARCHAR(255) NOT NULL,
     `description`      TEXT         NULL,

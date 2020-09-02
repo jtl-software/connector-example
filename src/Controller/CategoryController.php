@@ -51,16 +51,24 @@ class CategoryController extends AbstractController implements PullInterface, Pu
             $model->getId()->setEndpoint($endpointId);
         }
 
-        $statement = $this->pdo->prepare("INSERT INTO categories (id, parent_id, status) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE id = ?");
-        $statement->execute([
+        $query = "INSERT INTO categories (id, parent_id, status) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE status = ?, parent_id = ?";
+
+        $params = [
             $endpointId,
-            $model->getParentCategoryId()->getEndpoint() === "" ? 0 : $model->getParentCategoryId()->getEndpoint(),
-            (int)$model->getIsActive(),
-            $endpointId
-        ]);
+            $parentId = $model->getParentCategoryId()->getEndpoint() === '' ? null : $model->getParentCategoryId()->getEndpoint(),
+            $status = (int)$model->getIsActive(),
+            $status,
+            $parentId
+        ];
+
+        $statement = $this->pdo->prepare($query);
+        $statement->execute($params);
 
         foreach ($model->getI18ns() as $i18n) {
-            $statement = $this->pdo->prepare("INSERT INTO category_translations (category_id, name, description, title_tag, meta_description, meta_keywords, language_iso) VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE category_id = ?, language_iso = ?");
+            $statement = $this->pdo->prepare(
+                "INSERT INTO category_translations (category_id, name, description, title_tag, meta_description, meta_keywords, language_iso) VALUES (?, ?, ?, ?, ?, ?, ?) 
+                           ON DUPLICATE KEY UPDATE name = ?, description = ?, title_tag = ? , meta_description = ?, meta_keywords = ?");
+
             $statement->execute([
                 $endpointId,
                 $i18n->getName(),
@@ -69,8 +77,11 @@ class CategoryController extends AbstractController implements PullInterface, Pu
                 $i18n->getMetaDescription(),
                 $i18n->getMetaKeywords(),
                 $i18n->getLanguageIso(),
-                $endpointId,
-                $i18n->getLanguageIso()
+                $i18n->getName(),
+                $i18n->getDescription(),
+                $i18n->getTitleTag(),
+                $i18n->getMetaDescription(),
+                $i18n->getMetaKeywords(),
             ]);
         }
 
@@ -85,7 +96,7 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         $return = [];
 
         $statement = $this->pdo->prepare("
-            SELECT * FROM categories c
+            SELECT id as id, parent_id as parent_id, status FROM categories c
             LEFT JOIN mapping m ON c.id = m.endpoint
             WHERE m.host IS NULL OR m.type != ?
         ");
@@ -94,7 +105,7 @@ class CategoryController extends AbstractController implements PullInterface, Pu
             IdentityType::CATEGORY
         ]);
 
-        $categories = $statement->fetchAll();
+        $categories = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($categories as $category) {
             $return[] = $this->createJtlCategory($category);
@@ -130,7 +141,7 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         $jtlCategory = (new Category)
             ->setId(new Identity($category['id']))
             ->setIsActive($category["status"])
-            ->setParentCategoryId(new Identity($category['parent_id']));
+            ->setParentCategoryId(new Identity($category['parent_id'] ?? ''));
 
         $statement = $this->pdo->prepare("
             SELECT * FROM category_translations t
