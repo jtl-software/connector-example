@@ -5,7 +5,7 @@ namespace Jtl\Connector\Example\Controller;
 use PDO;
 
 /**
- * Creating an abstract controller class to pass the database object only once
+ * Abstract controller class to pass the database object only once.
  *
  * Class AbstractController
  * @package Jtl\Connector\Example\Controller
@@ -18,7 +18,7 @@ abstract class AbstractController
     protected $pdo;
 
     /**
-     * Using the DI container the access the previously defined database by demanding a PDO object in the class constructor
+     * Using direct dependencies for better testing and easier use with a DI container.
      *
      * AbstractController constructor.
      * @param PDO $pdo

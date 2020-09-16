@@ -15,7 +15,6 @@ use Jtl\Connector\Core\Model\QueryFilter;
 use Ramsey\Uuid\Uuid;
 
 /**
- * Creating the controller for the entity that the controller should support using the method interfaced to define supported methods
  *
  * Class CategoryController
  * @package Jtl\Connector\Example\Controller
@@ -96,7 +95,7 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         $return = [];
 
         $statement = $this->pdo->prepare("
-            SELECT id as id, parent_id as parent_id, status FROM categories c
+            SELECT * FROM categories c
             LEFT JOIN mapping m ON c.id = m.endpoint
             WHERE m.host IS NULL OR m.type != ?
         ");
@@ -148,6 +147,7 @@ class CategoryController extends AbstractController implements PullInterface, Pu
             LEFT JOIN categories c ON c.id = t.category_id
             WHERE c.id = ?
         ");
+        
         $statement->execute([$category['id']]);
         $i18ns = $statement->fetchAll(\PDO::FETCH_ASSOC);
 

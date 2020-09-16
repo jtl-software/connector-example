@@ -12,9 +12,10 @@
   "prefer-stable": true,
   "require": {
     "jtl/connector": "dev-develop",
-    "ext-pdo": "*",
     "phpunit/phpunit": "^9.3",
-    "jtl/unit-test": "^0.1.1"
+    "jtl/unit-test": "^0.1.1",
+    "ramsey/uuid": "^4.0",
+    "ext-pdo": "*"
   },
   "autoload": {
     "psr-4": {
