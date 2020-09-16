@@ -170,6 +170,6 @@ class CategoryController extends AbstractController implements PullInterface, Pu
             ->setTitleTag($i18n["title_tag"] ?? "")
             ->setMetaDescription($i18n["meta_description"] ?? "")
             ->setMetaKeywords($i18n["meta_keywords"] ?? "")
-            ->setLanguageIso($i18n["language_iso"] ?? "");
+            ->setLanguageIso($i18n["language_iso"]);
     }
 }

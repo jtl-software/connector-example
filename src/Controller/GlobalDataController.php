@@ -12,6 +12,7 @@ use Jtl\Connector\Core\Model\Language;
 use Jtl\Connector\Core\Model\QueryFilter;
 use Jtl\Connector\Core\Model\ShippingMethod;
 use Jtl\Connector\Core\Model\TaxRate;
+use Ramsey\Uuid\Uuid;
 
 class GlobalDataController implements PullInterface
 {
@@ -27,9 +28,9 @@ class GlobalDataController implements PullInterface
         // ***************************************
         // * Static values for presentation only *
         // ***************************************
-        
-        $id1 = new Identity(1);
-        $id2 = new Identity(2);
+
+        $id1 = new Identity(Uuid::uuid4()->getHex()->toString());
+        $id2 = new Identity(Uuid::uuid4()->getHex()->toString());
         
         // Languages
         $globalData->addLanguage(

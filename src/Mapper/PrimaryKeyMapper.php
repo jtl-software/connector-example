@@ -57,21 +57,23 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
      */
     public function delete(int $type, string $endpointId = null, int $hostId = null): bool
     {
-        $where = '';
-        $params = [];
+        $where = [
+            'type = ?',
+        ];
+        $params = [
+            $type
+        ];
 
-        if ($endpointId !== null && $hostId !== null) {
-            $where = 'WHERE endpoint = ? AND host = ? AND type = ?';
-            $params = [$endpointId, $hostId, $type];
-        } elseif ($endpointId !== null) {
-            $where = 'WHERE endpoint = ? AND type = ?';
-            $params = [$endpointId, $type];
-        } elseif ($hostId !== null) {
-            $where = 'WHERE host = ? AND type = ?';
-            $params = [$hostId, $type];
+        if ($endpointId !== null) {
+            $where[] = 'endpoint = ?';
+            $params[] = $endpointId;
+        }
+        if ($hostId !== null) {
+            $where[] = 'host = ?';
+            $params[] = $hostId;
         }
 
-        $statement = $this->pdo->prepare(sprintf('DELETE IGNORE FROM mapping %s', $where));
+        $statement = $this->pdo->prepare(sprintf('DELETE IGNORE FROM mapping WHERE %s', join(' AND ', $where)));
 
         return $statement->execute($params);
     }
