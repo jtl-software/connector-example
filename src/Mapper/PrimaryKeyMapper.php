@@ -83,6 +83,10 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
      */
     public function clear(int $type = null): bool
     {
+        if(!is_null($type)) {
+            return $this->delete($type);
+        }
+
         $statement = $this->pdo->prepare('DELETE FROM mapping');
         $statement->execute();
 
