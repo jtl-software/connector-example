@@ -12,6 +12,7 @@
   "prefer-stable": true,
   "require": {
     "jtl/connector": "dev-develop",
+    "ramsey/uuid": "^4.0",
     "ext-pdo": "*"
   },
   "autoload": {

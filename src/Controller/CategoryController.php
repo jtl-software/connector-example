@@ -95,7 +95,7 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         $return = [];
 
         $statement = $this->pdo->prepare("
-            SELECT id as id, parent_id as parent_id, status FROM categories c
+            SELECT * FROM categories c
             LEFT JOIN mapping m ON c.id = m.endpoint
             WHERE m.host IS NULL OR m.type != ?
         ");
