@@ -3,3 +3,4 @@ vendor
 var
 db
 .idea
+.phpunit.result.cache
