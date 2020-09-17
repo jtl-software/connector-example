@@ -22,6 +22,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
     }
 
     /**
+     * Returns the corresponding hostId to a endpointId and type
      * @inheritDoc
      */
     public function getHostId(int $type, string $endpointId): ?int
@@ -33,6 +34,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
     }
 
     /**
+     * Returns the corresponding endpointId to a hostId and type
      * @inheritDoc
      */
     public function getEndpointId(int $type, int $hostId): ?string
@@ -44,6 +46,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
     }
 
     /**
+     * Saves one specific linking
      * @inheritDoc
      */
     public function save(int $type, string $endpointId, int $hostId): bool
@@ -53,6 +56,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
     }
 
     /**
+     * Deletes a specific linking identified by the type and al least one part the the id
      * @inheritDoc
      */
     public function delete(int $type, string $endpointId = null, int $hostId = null): bool
@@ -79,6 +83,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
     }
 
     /**
+     * Clears either the whole mapping table or all entries of a certain type
      * @inheritDoc
      */
     public function clear(int $type = null): bool
