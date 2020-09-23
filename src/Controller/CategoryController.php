@@ -90,7 +90,7 @@ class CategoryController extends AbstractController implements PullInterface, Pu
     /**
      * @inheritDoc
      */
-    public function pull(QueryFilter $queryFilter): array
+    public function pull(QueryFilter $queryFilter = null): array
     {
         $return = [];
 
@@ -105,7 +105,6 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         ]);
 
         $categories = $statement->fetchAll(\PDO::FETCH_ASSOC);
-
         foreach ($categories as $category) {
             $return[] = $this->createJtlCategory($category);
         }
