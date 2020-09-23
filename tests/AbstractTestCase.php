@@ -1,5 +1,5 @@
 <?php
-namespace Jtl\Connector\Tests;
+namespace Jtl\Connector\Example\Tests;
 
 use Jtl\Connector\Core\Config\FileConfig;
 use Jtl\UnitTest\TestCase;

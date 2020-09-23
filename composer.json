@@ -20,7 +20,7 @@
   "autoload": {
     "psr-4": {
       "Jtl\\Connector\\Example\\": "src/",
-      "Jtl\\Connector\\Tests\\": "tests/"
+      "Jtl\\Connector\\Example\\Tests\\": "tests/"
     }
   },
   "require-dev": {

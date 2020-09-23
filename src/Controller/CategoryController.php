@@ -149,7 +149,7 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         
         $statement->execute([$category['id']]);
         $i18ns = $statement->fetchAll(\PDO::FETCH_ASSOC);
-
+        
         foreach ($i18ns as $i18n) {
             $jtlCategory->addI18n($this->createJtlCategoryI18n($i18n));
         }

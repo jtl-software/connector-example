@@ -1,15 +1,12 @@
 <?php
 
-namespace Jtl\Connector\Tests\Unit;
+namespace Jtl\Connector\Example\Tests\src\Controller;
 
-use Jtl\Connector\Core\Definition\IdentityType;
 use Jtl\Connector\Core\Model\Category;
 use Jtl\Connector\Core\Model\CategoryI18n;
 use Jtl\Connector\Core\Model\Generator\AbstractModelFactory;
-use Jtl\Connector\Core\Model\Identity;
 use Jtl\Connector\Example\Controller\CategoryController;
-use Jtl\Connector\Tests\AbstractTestCase;
-use Ramsey\Uuid\Uuid;
+use Jtl\Connector\Example\Tests\AbstractTestCase;
 use ReflectionException;
 
 class CategoryControllerTest extends AbstractTestCase
@@ -21,8 +18,30 @@ class CategoryControllerTest extends AbstractTestCase
      */
     public function testCreateJtlCategoryReturnsValidObjects($categoryData)
     {
+        $pdoMock = $this->getMockBuilder(\PDO::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        
+        $statementMock = $this->createMock(\PDOStatement::class);
+        
+        $pdoMock
+            ->expects($this->once())
+            ->method("prepare")
+            ->willReturn($statementMock);
+        
+        $statementMock
+            ->expects($this->once())
+            ->method("execute")
+            ->with([$categoryData["id"]]);
+        
+        $statementMock
+            ->expects($this->once())
+            ->method("fetchAll")
+            ->willReturn([]);
+        
+        
         /** @var $result Category */
-        $result = $this->invokeMethodFromObject(new CategoryController($this->pdo), "createJtlCategory", $categoryData);
+        $result = $this->invokeMethodFromObject(new CategoryController($pdoMock), "createJtlCategory", $categoryData);
         
         $this->assertInstanceOf(Category::class, $result);
         $this->assertEquals($categoryData["id"], $result->getId()->getEndpoint());
@@ -37,9 +56,12 @@ class CategoryControllerTest extends AbstractTestCase
      */
     public function testCreateJtlCategoryI18nReturnsValidObjects($categoryI18nData)
     {
+        $categoryControllerMock = $this->getMockBuilder(CategoryController::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         
         /** @var $result CategoryI18n */
-        $result = $this->invokeMethodFromObject(new CategoryController($this->pdo), "createJtlCategoryI18n", $categoryI18nData);
+        $result = $this->invokeMethodFromObject($categoryControllerMock, "createJtlCategoryI18n", $categoryI18nData);
         
         $this->assertInstanceOf(CategoryI18n::class, $result);
         $this->assertEquals($categoryI18nData["name"], $result->getName());
@@ -101,7 +123,6 @@ class CategoryControllerTest extends AbstractTestCase
                     "meta_description" => "testMetaDescription",
                     "meta_keywords"    => "testMetaKeywords",
                     "language_iso"     => "testInvalidValue",
-                
                 ],
             ],
         ];
@@ -118,8 +139,7 @@ class CategoryControllerTest extends AbstractTestCase
             ->disableOriginalConstructor()
             ->getMock();
         
-        $statementMock = $this->getMockBuilder(\PDOStatement::class)
-            ->getMock();
+        $statementMock = $this->createMock(\PDOStatement::class);
         
         $pdoMock
             ->expects($this->once())
@@ -145,8 +165,7 @@ class CategoryControllerTest extends AbstractTestCase
             ->disableOriginalConstructor()
             ->getMock();
         
-        $statementMock = $this->getMockBuilder(\PDOStatement::class)
-            ->getMock();
+        $statementMock = $this->createMock(\PDOStatement::class);
         
         $pdoMock
             ->expects($this->exactly(2))
@@ -178,16 +197,17 @@ class CategoryControllerTest extends AbstractTestCase
     }
     
     /**
+     * @dataProvider categoryPullDataProvider
+     * @param array $testDbResult
      * @throws ReflectionException
      */
-    public function testCategoryPull()
+    public function testCategoryPull(array $testDbResult)
     {
         $pdoMock = $this->getMockBuilder(\PDO::class)
             ->disableOriginalConstructor()
             ->getMock();
         
-        $statementMock = $this->getMockBuilder(\PDOStatement::class)
-            ->getMock();
+        $statementMock = $this->createMock(\PDOStatement::class);
         
         $categoryControllerMock = $this->getMockBuilder(CategoryController::class)
             ->setConstructorArgs([$pdoMock])
@@ -203,28 +223,36 @@ class CategoryControllerTest extends AbstractTestCase
             ->expects($this->once())
             ->method("execute");
         
-        $testDbResult = [
-            [
-                "id"        => "1",
-                "status"    => true,
-                "parent_id" => null,
-            ],
-            [
-                "id"        => "2",
-                "status"    => false,
-                "parent_id" => "1",
-            ],
-        ];
         $statementMock
             ->expects($this->once())
             ->method("fetchAll")
             ->willReturn($testDbResult);
-    
+        
         $categoryControllerMock
             ->expects($this->exactly(count($testDbResult)))
             ->method("createJtlCategory");
-            
+        
         $result = $this->invokeMethodFromObject($categoryControllerMock, "pull");
         $this->assertCount(count($testDbResult), $result);
+    }
+    
+    public function categoryPullDataProvider()
+    {
+        return [
+            [
+                [
+                    [
+                        "id"        => "1",
+                        "status"    => true,
+                        "parent_id" => null,
+                    ],
+                    [
+                        "id"        => "2",
+                        "status"    => false,
+                        "parent_id" => "1",
+                    ],
+                ],
+            ],
+        ];
     }
 }
