@@ -90,7 +90,7 @@ class CategoryController extends AbstractController implements PullInterface, Pu
     /**
      * @inheritDoc
      */
-    public function pull(QueryFilter $queryFilter = null): array
+    public function pull(QueryFilter $queryFilter): array
     {
         $return = [];
 

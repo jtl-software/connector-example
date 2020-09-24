@@ -5,6 +5,7 @@ namespace Jtl\Connector\Example\Tests\src\Controller;
 use Jtl\Connector\Core\Model\Category;
 use Jtl\Connector\Core\Model\CategoryI18n;
 use Jtl\Connector\Core\Model\Generator\AbstractModelFactory;
+use Jtl\Connector\Core\Model\QueryFilter;
 use Jtl\Connector\Example\Controller\CategoryController;
 use Jtl\Connector\Example\Tests\AbstractTestCase;
 use ReflectionException;
@@ -232,7 +233,7 @@ class CategoryControllerTest extends AbstractTestCase
             ->expects($this->exactly(count($testDbResult)))
             ->method("createJtlCategory");
         
-        $result = $this->invokeMethodFromObject($categoryControllerMock, "pull");
+        $result = $this->invokeMethodFromObject($categoryControllerMock, "pull", new QueryFilter());
         $this->assertCount(count($testDbResult), $result);
     }
     
