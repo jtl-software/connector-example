@@ -19,7 +19,11 @@
   },
   "autoload": {
     "psr-4": {
-      "Jtl\\Connector\\Example\\": "src/",
+      "Jtl\\Connector\\Example\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
       "Jtl\\Connector\\Example\\Tests\\": "tests/"
     }
   },
