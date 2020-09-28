@@ -66,7 +66,8 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         foreach ($model->getI18ns() as $i18n) {
             $statement = $this->pdo->prepare(
                 "INSERT INTO category_translations (category_id, name, description, title_tag, meta_description, meta_keywords, language_iso) VALUES (?, ?, ?, ?, ?, ?, ?) 
-                           ON DUPLICATE KEY UPDATE name = ?, description = ?, title_tag = ? , meta_description = ?, meta_keywords = ?");
+                           ON DUPLICATE KEY UPDATE name = ?, description = ?, title_tag = ? , meta_description = ?, meta_keywords = ?"
+            );
 
             $statement->execute([
                 $endpointId,
