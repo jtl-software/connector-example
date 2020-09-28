@@ -4,3 +4,4 @@ var
 db
 .idea
 .phpunit.result.cache
+config.json

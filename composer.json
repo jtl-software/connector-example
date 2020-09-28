@@ -12,12 +12,19 @@
   "prefer-stable": true,
   "require": {
     "jtl/connector": "dev-develop",
+    "phpunit/phpunit": "^9.3",
+    "jtl/unit-test": "^0.1.1",
     "ramsey/uuid": "^4.0",
     "ext-pdo": "*"
   },
   "autoload": {
     "psr-4": {
       "Jtl\\Connector\\Example\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Jtl\\Connector\\Example\\Tests\\": "tests/"
     }
   },
   "require-dev": {

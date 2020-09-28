@@ -68,7 +68,8 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         foreach ($model->getI18ns() as $i18n) {
             $statement = $this->pdo->prepare(
                 "INSERT INTO category_translations (category_id, name, description, title_tag, meta_description, meta_keywords, language_iso) VALUES (?, ?, ?, ?, ?, ?, ?) 
-                           ON DUPLICATE KEY UPDATE name = ?, description = ?, title_tag = ? , meta_description = ?, meta_keywords = ?");
+                           ON DUPLICATE KEY UPDATE name = ?, description = ?, title_tag = ? , meta_description = ?, meta_keywords = ?"
+            );
 
             $statement->execute([
                 $endpointId,
@@ -108,7 +109,6 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         ]);
 
         $categories = $statement->fetchAll(\PDO::FETCH_ASSOC);
-
         foreach ($categories as $category) {
             $return[] = $this->createJtlCategory($category);
         }
@@ -155,7 +155,7 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         
         $statement->execute([$category['id']]);
         $i18ns = $statement->fetchAll(\PDO::FETCH_ASSOC);
-
+        
         foreach ($i18ns as $i18n) {
             $jtlCategory->addI18n($this->createJtlCategoryI18n($i18n));
         }
