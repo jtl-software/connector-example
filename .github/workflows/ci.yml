@@ -9,7 +9,7 @@ jobs:
         matrix:
           operating-system: [ubuntu-latest]
           php-versions: ['7.2', '7.3']
-      name: PHP ${{ matrix.php-version }} Test on ${{ matrix.operating-system }}
+      name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
       steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -17,11 +17,15 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-versions: ${{ matrix.php-version }}
+          php-version: ${{ matrix.php-versions }}
           extensions: mbstring, intl, mysql
-          ini-values: post_may_size=256M
-          coverage: xdebug
           tools: phpunit
+
+      - name: Enable PDO
+          run: sudo phpenmod pdo_mysql
+
+      - name: Restart apache
+          run: sudo service apache2 restart
 
       - name: Run composer
         uses: php-actions/composer@v1
