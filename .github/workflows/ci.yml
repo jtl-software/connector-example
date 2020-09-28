@@ -22,7 +22,7 @@ jobs:
           tools: phpunit
 
       - name: Installing PDO
-        run: apt-get install php${{ matrix.php-versions }}-mysql
+        run: sudo apt-get install php${{ matrix.php-versions }}-mysql
 
       - name: Enable PDO
         run: sudo phpenmod pdo_mysql
