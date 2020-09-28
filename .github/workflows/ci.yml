@@ -22,10 +22,10 @@ jobs:
           tools: phpunit
 
       - name: Enable PDO
-          run: sudo phpenmod pdo_mysql
+        run: sudo phpenmod pdo_mysql
 
       - name: Restart apache
-          run: sudo service apache2 restart
+        run: sudo service apache2 restart
 
       - name: Run composer
         uses: php-actions/composer@v1
