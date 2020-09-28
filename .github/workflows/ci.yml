@@ -1,4 +1,4 @@
-name: Unit-Test
+name: CI
 
 on: push
 
@@ -7,8 +7,8 @@ jobs:
       runs-on: ${{ matrix.operating-system }}
       strategy:
         matrix:
-        operating-system: [ubuntu-latest]
-        php-versions: ['7.2', '7.3']
+          operating-system: [ubuntu-latest]
+          php-versions: ['7.2', '7.3']
       name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
       steps:
       - name: Checkout
