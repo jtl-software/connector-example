@@ -1,0 +1,9 @@
+{
+    "db": {
+        "host": "localhost",
+        "name": "example_connector_db",
+        "username": "root",
+        "password": "jtlgmbh"
+    },
+    "token": "123456789"
+}

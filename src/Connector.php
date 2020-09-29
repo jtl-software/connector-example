@@ -1,150 +1,136 @@
 <?php
-/**
- *
- * @copyright 2010-2015 JTL-Software GmbH
- * @package Jtl\Connector\Example
- */
+
 namespace Jtl\Connector\Example;
 
-use jtl\Connector\Base\Connector as BaseConnector;
-use jtl\Connector\Core\Rpc\Method;
-use jtl\Connector\Core\Rpc\RequestPacket;
-use jtl\Connector\Core\Utilities\RpcMethod;
-use jtl\Connector\Core\Controller\Controller as CoreController;
-use Jtl\Connector\Example\Authentication\TokenLoader;
-use Jtl\Connector\Example\Checksum\ChecksumLoader;
+use DI\Container;
+use Jtl\Connector\Core\Authentication\TokenValidatorInterface;
+use Jtl\Connector\Core\Config\ConfigSchema;
+use Jtl\Connector\Core\Connector\ConnectorInterface;
+use Jtl\Connector\Core\Mapper\PrimaryKeyMapperInterface;
+use Jtl\Connector\Example\Authentication\TokenValidator;
+use Jtl\Connector\Example\Installer\Installer;
 use Jtl\Connector\Example\Mapper\PrimaryKeyMapper;
-use jtl\Connector\Result\Action;
+use Noodlehaus\ConfigInterface;
+use PDO;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * Example Connector
- *
  * @access public
  */
-class Connector extends BaseConnector
+class Connector implements ConnectorInterface
 {
+    public const
+        INSTALLER_LOCK_FILE = 'installer.lock';
     /**
-     * Current Controller
-     *
-     * @var \jtl\Connector\Core\Controller\Controller
+     * @var ConfigInterface
      */
-    protected $controller;
+    protected $config;
 
     /**
-     * @var string
+     * @var PDO
      */
-    protected $action;
+    protected $pdo;
 
-    public function initialize()
+    /**
+     * @param ConfigInterface $config
+     * @param Container $container
+     * @param EventDispatcher $dispatcher
+     */
+    public function initialize(ConfigInterface $config, Container $container, EventDispatcher $dispatcher) : void
     {
-        $this->setPrimaryKeyMapper(new PrimaryKeyMapper())
-            ->setTokenLoader(new TokenLoader())
-            ->setChecksumLoader(new ChecksumLoader());
-    }
+        $this->config = $config;
+        $this->pdo = $this->createPdoInstance($config->get('db'));
 
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \jtl\Connector\Application\IEndpointConnector::canHandle()
-     */
-    public function canHandle()
-    {
-        $controller = RpcMethod::buildController($this->getMethod()->getController());
-
-        $class = "\\Jtl\\Connector\\Example\\Controller\\{$controller}";
-        if (class_exists($class)) {
-            $this->controller = $class::getInstance();
-            $this->action = RpcMethod::buildAction($this->getMethod()->getAction());
-
-            return is_callable(array($this->controller, $this->action));
+        $connectorDir = $config->get(ConfigSchema::CONNECTOR_DIR);
+        $lockFile = sprintf('%s/%s', $connectorDir, self::INSTALLER_LOCK_FILE);
+        if (!is_file($lockFile)) {
+            $installer = new Installer($this->pdo, $connectorDir);
+            $installer->run();
+            file_put_contents($lockFile, sprintf('Created at %s', (new \DateTimeImmutable())->format('Y-m-d H:i:s')));
         }
 
-        return false;
+        // Passing the instantiated database object to the DI container,
+        // so it can be injected into the controllers by instantiation.
+        // For more information about the di container see https://php-di.org/doc/
+        $container->set(PDO::class, $this->pdo);
     }
 
     /**
-     * (non-PHPdoc)
+     * Defining the primary key mapper which is used to manage the links between JTL-Wawi and the shop entities.
      *
-     * @see \jtl\Connector\Application\IEndpointConnector::handle()
+     * @return PrimaryKeyMapperInterface
      */
-    public function handle(RequestPacket $requestpacket)
+    public function getPrimaryKeyMapper() : PrimaryKeyMapperInterface
     {
-        // Set the method to our controller
-        $this->controller->setMethod($this->getMethod());
-
-        if ($this->action === Method::ACTION_PUSH || $this->action === Method::ACTION_DELETE) {
-            /*
-            if ($this->getMethod()->getController() === 'image') {
-                return $this->controller->{$this->action}($requestpacket->getParams());
-            }
-            */
-
-            if (!is_array($requestpacket->getParams())) {
-                throw new \Exception("Expecting request array, invalid data given");
-            }
-
-            $action = new Action();
-            $results = array();
-            if ($this->action === Method::ACTION_PUSH && $this->getMethod()->getController() === 'product_price') {
-                $params = $requestpacket->getParams();
-                $result = $this->controller->update($params);
-                $results[] = $result->getResult();
-            }
-            else {
-                foreach ($requestpacket->getParams() as $param) {
-                    $result = $this->controller->{$this->action}($param);
-                    $results[] = $result->getResult();
-                }
-            }
-
-            $action->setHandled(true)
-                ->setResult($results)
-                ->setError($result->getError());    // @todo: refactor to array of errors
-
-            return $action;
-        }
-        else {
-            return $this->controller->{$this->action}($requestpacket->getParams());
-        }
+        return new PrimaryKeyMapper($this->pdo);
     }
 
     /**
-     * Getter Controller
+     * Defining the token validator which is used to check the given token on an auth call.
      *
-     * @return \jtl\Connector\Core\Controller\Controller
+     * @return TokenValidatorInterface
+     * @throws \Exception
      */
-    public function getController()
+    public function getTokenValidator() : TokenValidatorInterface
     {
-        return $this->controller;
+        return new TokenValidator($this->config->get("token"));
     }
 
     /**
-     * Setter Controller
-     *
-     * @param \jtl\Connector\Core\Controller\Controller $controller
-     */
-    public function setController(CoreController $controller)
-    {
-        $this->controller = $controller;
-    }
-
-    /**
-     * Getter Action
+     * Defining the controller namespace which holds the controller classes for all entities, so they can be found by the application.
      *
      * @return string
      */
-    public function getAction()
+    public function getControllerNamespace() : string
     {
-        return $this->action;
+        return "Jtl\Connector\Example\Controller";
     }
 
     /**
-     * Setter Action
+     * Defining the connectors version.
      *
-     * @param string $action
+     * @return string
      */
-    public function setAction($action)
+    public function getEndpointVersion() : string
     {
-        $this->action = $action;
+        return "0.1";
+    }
+
+    /**
+     * Defining the connectors associated shop version. Should be empty for "Bulk" platform.
+     *
+     * @return string
+     */
+    public function getPlatformVersion() : string
+    {
+        return "";
+    }
+
+    /**
+     * Defining the connectors associated shop name. Using "Bulk" as the default name for all third party connectors.
+     *
+     * @return string
+     */
+    public function getPlatformName() : string
+    {
+        return "Bulk";
+    }
+
+    /**
+     * @param string[] $dbParams
+     * @return PDO
+     */
+    private function createPdoInstance(array $dbParams) : PDO
+    {
+        $pdo = new PDO(
+            sprintf("mysql:host=%s;dbname=%s", $dbParams["host"], $dbParams["name"]),
+            $dbParams["username"],
+            $dbParams["password"]
+        );
+
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        return $pdo;
     }
 }
