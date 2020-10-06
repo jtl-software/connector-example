@@ -22,7 +22,8 @@ abstract class AbstractTestCase extends TestCase
     
     public function setUp() : void
     {
-        $this->initPdoInstance();
+        //Currently not needed because all pdo instances are being mocked.
+        //$this->initPdoInstance();
         parent::setUp();
     }
 }

@@ -18,15 +18,8 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          extensions: mbstring, intl, mysql, sqlite
-          ini: extension=pdo_mysql.so, extension=pdo_sqlite
+          extensions: mbstring, intl
           tools: phpunit
-
-      - name: Enable PDO
-        run: sudo phpenmod pdo_mysql
-
-      - name: Enable PDO2
-        run: sudo phpenmod pdo_sqlite
 
       - name: Run composer
         uses: php-actions/composer@v2
