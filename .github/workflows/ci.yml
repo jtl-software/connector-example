@@ -19,14 +19,13 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: mbstring, intl, mysql
-          ini-values: extension=pdo.so
           tools: phpunit
 
       - name: Enable PDO
         run: sudo phpenmod pdo_mysql
 
       - name: Run composer
-        uses: php-actions/composer@v1
+        uses: php-actions/composer@v2
 
       - name: Run unit tests
         uses: php-actions/phpunit@v9

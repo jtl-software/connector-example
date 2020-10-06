@@ -12,6 +12,8 @@ abstract class AbstractTestCase extends TestCase
     
     public function initPdoInstance()
     {
+        phpinfo();
+        die();
         $this->config = new FileConfig(sprintf('%s/config/config.json', dirname(__DIR__)));
         $this->pdo = new PDO(
             sprintf("mysql:host=%s;dbname=%s", $this->config->get('db.host'), "example_connector_db"),
