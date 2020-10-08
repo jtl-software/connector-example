@@ -14,10 +14,10 @@ class CategoryControllerTest extends TestCase
 {
     /**
      * @dataProvider createJtlCategoryDataProvider
-     * @param $categoryData
+     * @param mixed[] $categoryData
      * @throws ReflectionException
      */
-    public function testCreateJtlCategoryReturnsValidObjects($categoryData)
+    public function testCreateJtlCategoryReturnsValidObjects(array $categoryData)
     {
         $pdoMock = $this->getMockBuilder(\PDO::class)
             ->disableOriginalConstructor()
