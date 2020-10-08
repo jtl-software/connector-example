@@ -7,10 +7,10 @@ use Jtl\Connector\Core\Model\CategoryI18n;
 use Jtl\Connector\Core\Model\Generator\AbstractModelFactory;
 use Jtl\Connector\Core\Model\QueryFilter;
 use Jtl\Connector\Example\Controller\CategoryController;
-use Jtl\Connector\Example\Tests\AbstractTestCase;
+use Jtl\Connector\Example\Tests\TestCase;
 use ReflectionException;
 
-class CategoryControllerTest extends AbstractTestCase
+class CategoryControllerTest extends TestCase
 {
     /**
      * @dataProvider createJtlCategoryDataProvider
@@ -169,12 +169,12 @@ class CategoryControllerTest extends AbstractTestCase
         $statementMock = $this->createMock(\PDOStatement::class);
         
         $pdoMock
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(1 + count($category->getI18ns())))
             ->method("prepare")
             ->willReturn($statementMock);
         
         $statementMock
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(1 + count($category->getI18ns())))
             ->method("execute");
         
         /** @var $result Category */

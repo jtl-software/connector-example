@@ -32,7 +32,6 @@ class Installer
      */
     public function run(): void
     {
-
         $scripts = glob(sprintf("%s/scripts/*.sql", $this->connectorDir));
         
         foreach ($scripts as $script) {

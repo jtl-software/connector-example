@@ -6,12 +6,14 @@
     {
       "name": "Niklas Kokoschka",
       "email": "niklas.kokoschka@jtl-software.com"
+    },
+    {
+      "name": "Patryk Gorol",
+      "email": "patryk.gorol@jtl-software.com"
     }
   ],
-  "minimum-stability": "dev",
-  "prefer-stable": true,
   "require": {
-    "jtl/connector": "dev-develop",
+    "jtl/connector": "^4.0",
     "phpunit/phpunit": "^9.3",
     "jtl/unit-test": "^0.1.1",
     "ramsey/uuid": "^4.0",

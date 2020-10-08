@@ -22,6 +22,7 @@ use Ramsey\Uuid\Uuid;
 class CategoryController extends AbstractController implements PullInterface, PushInterface, StatisticInterface, DeleteInterface
 {
     /**
+     * Deletes a category by its id
      * @param AbstractDataModel $model
      * @return AbstractDataModel
      */
@@ -37,6 +38,7 @@ class CategoryController extends AbstractController implements PullInterface, Pu
     }
 
     /**
+     * Inserts a new category or updates an existing one
      * @param AbstractDataModel $model
      * @return AbstractDataModel
      */
@@ -66,7 +68,8 @@ class CategoryController extends AbstractController implements PullInterface, Pu
         foreach ($model->getI18ns() as $i18n) {
             $statement = $this->pdo->prepare(
                 "INSERT INTO category_translations (category_id, name, description, title_tag, meta_description, meta_keywords, language_iso) VALUES (?, ?, ?, ?, ?, ?, ?) 
-                           ON DUPLICATE KEY UPDATE name = ?, description = ?, title_tag = ? , meta_description = ?, meta_keywords = ?");
+                           ON DUPLICATE KEY UPDATE name = ?, description = ?, title_tag = ? , meta_description = ?, meta_keywords = ?"
+            );
 
             $statement->execute([
                 $endpointId,
@@ -88,6 +91,7 @@ class CategoryController extends AbstractController implements PullInterface, Pu
     }
 
     /**
+     * Returns all unlinked categories
      * @inheritDoc
      */
     public function pull(QueryFilter $queryFilter): array
@@ -113,6 +117,7 @@ class CategoryController extends AbstractController implements PullInterface, Pu
     }
 
     /**
+     * Returns the number of unlinked categories
      * @param QueryFilter $queryFilter
      * @return int
      */
@@ -131,6 +136,7 @@ class CategoryController extends AbstractController implements PullInterface, Pu
     }
 
     /**
+     * A helper function to convert database records to models used in the connector
      * @param array $category
      * @return Category
      */
@@ -158,6 +164,7 @@ class CategoryController extends AbstractController implements PullInterface, Pu
     }
 
     /**
+     * A helper function to convert database records to models used in the connector
      * @param array $i18n
      * @return CategoryI18n
      */
@@ -169,6 +176,6 @@ class CategoryController extends AbstractController implements PullInterface, Pu
             ->setTitleTag($i18n["title_tag"] ?? "")
             ->setMetaDescription($i18n["meta_description"] ?? "")
             ->setMetaKeywords($i18n["meta_keywords"] ?? "")
-            ->setLanguageIso($i18n["language_iso"] ?? "");
+            ->setLanguageIso($i18n["language_iso"]);
     }
 }

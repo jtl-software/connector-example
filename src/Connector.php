@@ -124,7 +124,7 @@ class Connector implements ConnectorInterface
     private function createPdoInstance(array $dbParams) : PDO
     {
         $pdo = new PDO(
-            sprintf("mysql:host=%s;dbname=%s", $dbParams["host"], "example_connector_db"),
+            sprintf("mysql:host=%s;dbname=%s", $dbParams["host"], $dbParams["name"]),
             $dbParams["username"],
             $dbParams["password"]
         );
