@@ -48,6 +48,7 @@ class CategoryControllerTest extends TestCase
         $this->assertEquals($categoryData["id"], $result->getId()->getEndpoint());
         $this->assertEquals($categoryData["status"], $result->getIsActive());
         $this->assertEquals($categoryData["parent_id"], $result->getParentCategoryId()->getEndpoint());
+        $this->assertTrue(false);
     }
     
     /**
