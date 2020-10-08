@@ -14,10 +14,10 @@ class CategoryControllerTest extends TestCase
 {
     /**
      * @dataProvider createJtlCategoryDataProvider
-     * @param $categoryData
+     * @param mixed[] $categoryData
      * @throws ReflectionException
      */
-    public function testCreateJtlCategoryReturnsValidObjects($categoryData)
+    public function testCreateJtlCategoryReturnsValidObjects(array $categoryData)
     {
         $pdoMock = $this->getMockBuilder(\PDO::class)
             ->disableOriginalConstructor()
@@ -48,7 +48,6 @@ class CategoryControllerTest extends TestCase
         $this->assertEquals($categoryData["id"], $result->getId()->getEndpoint());
         $this->assertEquals($categoryData["status"], $result->getIsActive());
         $this->assertEquals($categoryData["parent_id"], $result->getParentCategoryId()->getEndpoint());
-        $this->assertTrue(false);
     }
     
     /**
