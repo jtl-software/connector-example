@@ -185,6 +185,11 @@
             "push": false,
             "delete": false
         },
+        "GlobalData": {
+            "pull": true,
+            "push": false,
+            "delete": false
+        },
         "Image": {
             "pull": false,
             "push": false,
