@@ -46,6 +46,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Checkout release tag
         run: git checkout tags/$VERSION -b tmp
 
       - name: Run composer
