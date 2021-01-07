@@ -40,11 +40,13 @@ jobs:
     steps:
       - name: System praparation
         run: |
+          VERSION=${{ github.event.inputs.tag }}
           sudo apt-get update -yqq
           sudo apt-get install -yqq ftp-upload
 
       - name: Checkout
         uses: actions/checkout@v2
+        run: git checkout tags/$VERSION -b tmp
 
       - name: Run composer
         uses: php-actions/composer@v2
@@ -54,7 +56,6 @@ jobs:
 
       - name: Create release name
         run: |
-          VERSION=${{ github.event.inputs.tag }}
           echo "RELEASE_NAME=connector-example-$VERSION.zip" >> $GITHUB_ENV
 
       - name: Zip
