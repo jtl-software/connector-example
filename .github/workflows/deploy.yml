@@ -1,4 +1,4 @@
-name: Deploy
+name: Test ftp deployment
 
 on:
   workflow_dispatch:
@@ -54,7 +54,8 @@ jobs:
 
       - name: Create release name
         run: |
-          echo "RELEASE_NAME=connector-example-${{ github.event.inputs.name }}.zip" >> $GITHUB_ENV
+          VERSION=${{ github.event.inputs.tag }}
+          echo "RELEASE_NAME=connector-example-$VERSION.zip" >> $GITHUB_ENV
 
       - name: Zip
         uses: papeloto/action-zip@v1
