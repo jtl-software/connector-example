@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `mapping`
+CREATE TABLE IF NOT EXISTS `mappings`
 (
     `endpoint` VARBINARY(32) NOT NULL,
     `host`     INT        NOT NULL,

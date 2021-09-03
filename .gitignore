@@ -5,3 +5,4 @@ db
 .idea
 .phpunit.result.cache
 config.json
+installer.lock
