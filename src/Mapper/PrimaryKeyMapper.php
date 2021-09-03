@@ -27,7 +27,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
      */
     public function getHostId(int $type, string $endpointId): ?int
     {
-        $statement = $this->pdo->prepare('SELECT host FROM mapping WHERE endpoint = ? AND type = ?');
+        $statement = $this->pdo->prepare('SELECT host FROM mappings WHERE endpoint = ? AND type = ?');
         $statement->execute([$endpointId, $type]);
 
         return $statement->fetch();
@@ -39,7 +39,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
      */
     public function getEndpointId(int $type, int $hostId): ?string
     {
-        $statement = $this->pdo->prepare('SELECT endpoint FROM mapping WHERE host = ? AND type = ?');
+        $statement = $this->pdo->prepare('SELECT endpoint FROM mappings WHERE host = ? AND type = ?');
         $statement->execute([$hostId, $type]);
 
         return $statement->fetch()['endpoint'];
@@ -51,7 +51,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
      */
     public function save(int $type, string $endpointId, int $hostId): bool
     {
-        $statement = $this->pdo->prepare('INSERT INTO mapping (endpoint, host, type) VALUES (?, ?, ?)');
+        $statement = $this->pdo->prepare('INSERT INTO mappings (endpoint, host, type) VALUES (?, ?, ?)');
         return $statement->execute([$endpointId, $hostId, $type]);
     }
 
@@ -79,7 +79,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
             $params[] = $hostId;
         }
 
-        $statement = $this->pdo->prepare(sprintf('DELETE IGNORE FROM mapping WHERE %s', join(' AND ', $where)));
+        $statement = $this->pdo->prepare(sprintf('DELETE IGNORE FROM mappings WHERE %s', join(' AND ', $where)));
 
         return $statement->execute($params);
     }
@@ -94,7 +94,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
             return $this->delete($type);
         }
 
-        $statement = $this->pdo->prepare('DELETE FROM mapping');
+        $statement = $this->pdo->prepare('DELETE FROM mappings');
         $statement->execute();
 
         return $statement->fetch();
