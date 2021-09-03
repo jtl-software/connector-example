@@ -15,7 +15,7 @@ $application = null;
 //Setting up a custom FileConfig passing the needed File
 $config = new FileConfig(sprintf('%s/config/config.json', $connectorDir));
 
-//Setting up a custom config schema that checks the config file for the defined properties
+//Setting up a custom config schema which checks the config file for the defined properties
 $configSchema = (new ConfigSchema)
     ->setParameter(new ConfigParameter("token", "string", true))
     ->setParameter(new ConfigParameter("db.host", "string", true))
@@ -23,9 +23,10 @@ $configSchema = (new ConfigSchema)
     ->setParameter(new ConfigParameter("db.username", "string", true))
     ->setParameter(new ConfigParameter("db.password", "string", true));
 
-//Instantiating the Connector class which holds information and acts like a Toolbox the the application
+//Instantiating and starting the Application as the highest instance of the connector
+$application = new Application($connectorDir, $config, $configSchema);
+
+//The connector object keeps specific information about the endpoint implementation
 $connector = new Connector();
 
-//Instantiating and starting the Application as the highest instance of the Connector passing every custom object as well as the connector object
-$application = new Application($connector, $connectorDir, $config, $configSchema);
-$application->run();
+$application->run($connector);

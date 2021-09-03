@@ -64,6 +64,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
         $where = [
             'type = ?',
         ];
+
         $params = [
             $type
         ];
