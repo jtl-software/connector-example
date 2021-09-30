@@ -7,7 +7,7 @@ use Jtl\Connector\Core\Controller\PullInterface;
 use Jtl\Connector\Core\Controller\PushInterface;
 use Jtl\Connector\Core\Controller\StatisticInterface;
 use Jtl\Connector\Core\Definition\IdentityType;
-use Jtl\Connector\Core\Model\AbstractDataModel;
+use Jtl\Connector\Core\Model\AbstractModel;
 use Jtl\Connector\Core\Model\Category;
 use Jtl\Connector\Core\Model\CategoryI18n;
 use Jtl\Connector\Core\Model\Identity;
@@ -23,10 +23,10 @@ class CategoryController extends AbstractController implements PullInterface, Pu
 {
     /**
      * Deletes a category by its id
-     * @param AbstractDataModel $model
-     * @return AbstractDataModel
+     * @param AbstractModel $model
+     * @return AbstractModel
      */
-    public function delete(AbstractDataModel $model): AbstractDataModel
+    public function delete(AbstractModel $model): AbstractModel
     {
         /** @var $model Category */
         if (!empty($categoryId = $model->getId()->getEndpoint())) {
@@ -39,10 +39,10 @@ class CategoryController extends AbstractController implements PullInterface, Pu
 
     /**
      * Inserts a new category or updates an existing one
-     * @param AbstractDataModel $model
-     * @return AbstractDataModel
+     * @param AbstractModel $model
+     * @return AbstractModel
      */
-    public function push(AbstractDataModel $model): AbstractDataModel
+    public function push(AbstractModel $model): AbstractModel
     {
         /** @var Category $model */
         $endpointId = $model->getId()->getEndpoint();

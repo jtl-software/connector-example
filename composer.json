@@ -13,7 +13,7 @@
     }
   ],
   "require": {
-    "jtl/connector": "dev-master as 5.0",
+    "jtl/connector": "^5.0",
     "phpunit/phpunit": "^9.3",
     "jtl/unit-test": "^0.1.1",
     "ramsey/uuid": "^4.0",
