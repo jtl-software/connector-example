@@ -36,35 +36,36 @@ class GlobalDataControllerTest extends TestCase {
         // Languages
         $this->assertContainsOnly(Language::class, $result->getLanguages());
         $this->assertCount(2, $result->getLanguages());
-        $this->assertEqualsCanonicalizing(
-            (new Language())->setId(new Identity('4faa508a23e3427889bfae0561d7915d'))
-                ->setLanguageISO('ger')
-                ->setIsDefault(true)
-                ->setNameGerman('Deutsch')
-                ->setNameEnglish('German'),
-         $result->getLanguages()[0]);
-        $this->assertEqualsCanonicalizing(
-            (new Language())->setId(new Identity('8acb0d79a1bc407e9194cc5d8359aaec'))
-                ->setLanguageISO('eng')
-                ->setIsDefault(false)
-                ->setNameGerman('Englisch')
-                ->setNameEnglish('English')
-        , $result->getLanguages()[1]);
+        $expected = new Language();
+        $expected->setId(new Identity('4faa508a23e3427889bfae0561d7915d'))
+        ->setLanguageISO('ger')
+        ->setIsDefault(true)
+        ->setNameGerman('Deutsch')
+        ->setNameEnglish('German');
+        $this->assertEqualsCanonicalizing($expected, $result->getLanguages()[0]);
+
+        $expected = new Language();
+        $expected->setId(new Identity('8acb0d79a1bc407e9194cc5d8359aaec'))
+        ->setLanguageISO('eng')
+        ->setIsDefault(false)
+        ->setNameGerman('Englisch')
+        ->setNameEnglish('English');
+        $this->assertEqualsCanonicalizing($expected, $result->getLanguages()[1]);
         
         // Currencies
         $this->assertContainsOnly(Currency::class, $result->getCurrencies());
         $this->assertCount(1, $result->getCurrencies());
-        $this->assertEqualsCanonicalizing(
-            (new Currency())->setId(new Identity('56b0d7e12feb47838e2cd6c49f2cfd82'))
-                ->setIsDefault(true)
-                ->setName('Euro')
-                ->setDelimiterCent(',')
-                ->setDelimiterThousand('.')
-                ->setFactor(1.0)
-                ->setHasCurrencySignBeforeValue(false)
-                ->setIso('EUR')
-                ->setNameHtml('&euro;')
-            , $result->getCurrencies()[0]);
+        $expected = new Currency();
+        $expected->setId(new Identity('56b0d7e12feb47838e2cd6c49f2cfd82'))
+        ->setIsDefault(true)
+        ->setName('Euro')
+        ->setDelimiterCent(',')
+        ->setDelimiterThousand('.')
+        ->setFactor(1.0)
+        ->setHasCurrencySignBeforeValue(false)
+        ->setIso('EUR')
+        ->setNameHtml('&euro;');
+        $this->assertEqualsCanonicalizing($expected, $result->getCurrencies()[0]);
 
         // CustomerGroups
         $this->assertContainsOnly(CustomerGroup::class, $result->getCustomerGroups());
