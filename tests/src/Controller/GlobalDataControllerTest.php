@@ -56,15 +56,15 @@ class GlobalDataControllerTest extends TestCase {
         $this->assertContainsOnly(Currency::class, $result->getCurrencies());
         $this->assertCount(1, $result->getCurrencies());
         $expected = new Currency();
-        $expected->setId(new Identity('56b0d7e12feb47838e2cd6c49f2cfd82'))
-        ->setIsDefault(true)
+        $expected->setIsDefault(true)
         ->setName('Euro')
         ->setDelimiterCent(',')
         ->setDelimiterThousand('.')
         ->setFactor(1.0)
         ->setHasCurrencySignBeforeValue(false)
         ->setIso('EUR')
-        ->setNameHtml('&euro;');
+        ->setNameHtml('&euro;')
+        ->setId(new Identity('56b0d7e12feb47838e2cd6c49f2cfd82'));
         $this->assertEqualsCanonicalizing($expected, $result->getCurrencies()[0]);
 
         // CustomerGroups
