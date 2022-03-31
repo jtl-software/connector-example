@@ -36,48 +36,46 @@ class GlobalDataControllerTest extends TestCase {
         // Languages
         $this->assertContainsOnly(Language::class, $result->getLanguages());
         $this->assertCount(2, $result->getLanguages());
-        $expected = new Language();
-        $expected->setId(new Identity('4faa508a23e3427889bfae0561d7915d'))
-        ->setLanguageISO('ger')
-        ->setIsDefault(true)
-        ->setNameGerman('Deutsch')
-        ->setNameEnglish('German');
-        $this->assertEqualsCanonicalizing($expected, $result->getLanguages()[0]);
-
-        $expected = new Language();
-        $expected->setId(new Identity('8acb0d79a1bc407e9194cc5d8359aaec'))
-        ->setLanguageISO('eng')
-        ->setIsDefault(false)
-        ->setNameGerman('Englisch')
-        ->setNameEnglish('English');
-        $this->assertEqualsCanonicalizing($expected, $result->getLanguages()[1]);
+        $this->assertEquals((new Language())
+            ->setId(new Identity('4faa508a23e3427889bfae0561d7915d'))
+            ->setLanguageISO('ger')
+            ->setIsDefault(true)
+            ->setNameGerman('Deutsch')
+            ->setNameEnglish('German')
+        , $result->getLanguages()[0]);
+        $this->assertEquals((new Language())
+            ->setId(new Identity('8acb0d79a1bc407e9194cc5d8359aaec'))
+            ->setLanguageISO('eng')
+            ->setIsDefault(false)
+            ->setNameGerman('Englisch')
+            ->setNameEnglish('English')
+        , $result->getLanguages()[1]);
         
         // Currencies
         $this->assertContainsOnly(Currency::class, $result->getCurrencies());
         $this->assertCount(1, $result->getCurrencies());
-        $expected = new Currency();
-        $expected->setId(new Identity('56b0d7e12feb47838e2cd6c49f2cfd82'))
-        ->setIsDefault(true)
-        ->setName('Euro')
-        ->setDelimiterCent(',')
-        ->setDelimiterThousand('.')
-        ->setFactor(1.0)
-        ->setHasCurrencySignBeforeValue(false)
-        ->setIso('EUR')
-        ->setNameHtml('&euro;');
-
-        $this->assertEquals($expected, $result->getCurrencies()[0]);
+        $this->assertEquals((new Currency())
+            ->setId(new Identity('56b0d7e12feb47838e2cd6c49f2cfd82'))
+            ->setIsDefault(true)
+            ->setName('Euro')
+            ->setDelimiterCent(',')
+            ->setDelimiterThousand('.')
+            ->setFactor(1.0)
+            ->setHasCurrencySignBeforeValue(false)
+            ->setIso('EUR')
+            ->setNameHtml('&euro;')
+        , $result->getCurrencies()[0]);
 
         // CustomerGroups
         $this->assertContainsOnly(CustomerGroup::class, $result->getCustomerGroups());
         $this->assertCount(2, $result->getCustomerGroups());
-        $this->assertEqualsCanonicalizing(
+        $this->assertEquals(
             (new CustomerGroup())->setId(new Identity('c2c6154f05b342d4b2da85e51ec805c9'))
                 ->setIsDefault(true)
                 ->setApplyNetPrice(false)
                 ->addI18n((new CustomerGroupI18n())->setName('Endkunde'))
             , $result->getCustomerGroups()[0]);
-        $this->assertEqualsCanonicalizing(
+        $this->assertEquals(
             (new CustomerGroup())->setId(new Identity('b1d7b4cbe4d846f0b323a9d840800177'))
                 ->setIsDefault(false)
                 ->setApplyNetPrice(true)
@@ -96,7 +94,7 @@ class GlobalDataControllerTest extends TestCase {
         // shippingMethods
         $this->assertContainsOnly(ShippingMethod::class, $result->getShippingMethods());
         $this->assertCount(1, $result->getShippingMethods());
-        $this->assertEqualsCanonicalizing(
+        $this->assertEquals(
             (new ShippingMethod())->setId(new Identity('7adeec3fbbe942c6a8e910ead168703d'))
                 ->setName('DHL Versand')
             , $result->getShippingMethods()[0]);
