@@ -32,7 +32,7 @@ jobs:
       - name: Run unit tests
         uses: php-actions/phpunit@v9
         with:
-          configuration: ./phpunit.xml
+          configuration: ./phpunit.xml.dist
           bootstrap: ./vendor/autoload.php
   deploy:
     needs: test

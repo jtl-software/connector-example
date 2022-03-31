@@ -1,8 +1,8 @@
-composer.lock
 vendor
 var
 db
 .idea
+.vscode
 .phpunit.result.cache
 config.json
 installer.lock
