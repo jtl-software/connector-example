@@ -14,9 +14,10 @@ use Jtl\Connector\Core\Model\CustomerGroupI18n;
 use Jtl\Connector\Core\Model\ShippingMethod;
 use Jtl\Connector\Core\Model\TaxRate;
 
-class GlobalDataControllerTest extends TestCase {
-
-    public function testPullReturnValidObjectArray(){
+class GlobalDataControllerTest extends TestCase
+{
+    public function testPullReturnValidObjectArray()
+    {
         $controller = new GlobalDataController();
 
         $result = $controller->pull(new QueryFilter());
@@ -26,7 +27,8 @@ class GlobalDataControllerTest extends TestCase {
         $this->assertContainsOnlyInstancesOf(GlobalData::class, $result);
     }
 
-    public function testPullReturnStaticValues(){
+    public function testPullReturnStaticValues()
+    {
         $controller = new GlobalDataController();
 
         /** @var $result GlobalData */
@@ -41,15 +43,13 @@ class GlobalDataControllerTest extends TestCase {
             ->setLanguageISO('ger')
             ->setIsDefault(true)
             ->setNameGerman('Deutsch')
-            ->setNameEnglish('German')
-        , $result->getLanguages()[0]);
+            ->setNameEnglish('German'), $result->getLanguages()[0]);
         $this->assertEquals((new Language())
             ->setId(new Identity('8acb0d79a1bc407e9194cc5d8359aaec'))
             ->setLanguageISO('eng')
             ->setIsDefault(false)
             ->setNameGerman('Englisch')
-            ->setNameEnglish('English')
-        , $result->getLanguages()[1]);
+            ->setNameEnglish('English'), $result->getLanguages()[1]);
         
         // Currencies
         $this->assertContainsOnly(Currency::class, $result->getCurrencies());
@@ -63,8 +63,7 @@ class GlobalDataControllerTest extends TestCase {
             ->setFactor(1.0)
             ->setHasCurrencySignBeforeValue(false)
             ->setIso('EUR')
-            ->setNameHtml('&euro;')
-        , $result->getCurrencies()[0]);
+            ->setNameHtml('&euro;'), $result->getCurrencies()[0]);
 
         // CustomerGroups
         $this->assertContainsOnly(CustomerGroup::class, $result->getCustomerGroups());
@@ -73,33 +72,38 @@ class GlobalDataControllerTest extends TestCase {
             (new CustomerGroup())->setId(new Identity('c2c6154f05b342d4b2da85e51ec805c9'))
                 ->setIsDefault(true)
                 ->setApplyNetPrice(false)
-                ->addI18n((new CustomerGroupI18n())->setName('Endkunde'))
-            , $result->getCustomerGroups()[0]);
+                ->addI18n((new CustomerGroupI18n())->setName('Endkunde')),
+            $result->getCustomerGroups()[0]
+        );
         $this->assertEquals(
             (new CustomerGroup())->setId(new Identity('b1d7b4cbe4d846f0b323a9d840800177'))
                 ->setIsDefault(false)
                 ->setApplyNetPrice(true)
-                ->addI18n((new CustomerGroupI18n())->setName('Haendler'))
-            , $result->getCustomerGroups()[1]);
+                ->addI18n((new CustomerGroupI18n())->setName('Haendler')),
+            $result->getCustomerGroups()[1]
+        );
 
         // TaxRates
         $this->assertContainsOnly(TaxRate::class, $result->getTaxRates());
         $this->assertCount(2, $result->getTaxRates());
         $this->assertEquals(
             (new TaxRate())->setId(new Identity('f1ec9220f3f64049926a83f5ba8df985'))
-                ->setRate(19.0)
-            , $result->getTaxRates()[0]);
+                ->setRate(19.0),
+            $result->getTaxRates()[0]
+        );
         $this->assertEquals(
             (new TaxRate())->setId(new Identity('ec0a029a85554745aa42fb708d3c5c8c'))
-                ->setRate(7.0)
-            , $result->getTaxRates()[1]);
+                ->setRate(7.0),
+            $result->getTaxRates()[1]
+        );
 
         // shippingMethods
         $this->assertContainsOnly(ShippingMethod::class, $result->getShippingMethods());
         $this->assertCount(1, $result->getShippingMethods());
         $this->assertEquals(
             (new ShippingMethod())->setId(new Identity('7adeec3fbbe942c6a8e910ead168703d'))
-                ->setName('DHL Versand')
-            , $result->getShippingMethods()[0]);
+                ->setName('DHL Versand'),
+            $result->getShippingMethods()[0]
+        );
     }
 }
