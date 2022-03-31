@@ -6,3 +6,4 @@ db
 .phpunit.result.cache
 config.json
 installer.lock
+phpunit.xml
