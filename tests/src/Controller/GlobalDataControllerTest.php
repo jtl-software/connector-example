@@ -85,11 +85,14 @@ class GlobalDataControllerTest extends TestCase {
         // TaxRates
         $this->assertContainsOnly(TaxRate::class, $result->getTaxRates());
         $this->assertCount(2, $result->getTaxRates());
-        $rates = $result->getTaxRates();
-        $this->assertEquals($rates[0]->getId(), (new Identity('f1ec9220f3f64049926a83f5ba8df985')));
-        $this->assertEquals($rates[0]->getRate(), 19.0);
-        $this->assertEquals($rates[1]->getId(), (new Identity('ec0a029a85554745aa42fb708d3c5c8c')));
-        $this->assertEquals($rates[1]->getRate(), 7.0);
+        $this->assertEquals(
+            (new TaxRate())->setId(new Identity('f1ec9220f3f64049926a83f5ba8df985'))
+                ->setRate(19.0)
+            , $result->getTaxRates()[0]);
+        $this->assertEquals(
+            (new TaxRate())->setId(new Identity('ec0a029a85554745aa42fb708d3c5c8c'))
+                ->setRate(7.0)
+            , $result->getTaxRates()[1]);
 
         // shippingMethods
         $this->assertContainsOnly(ShippingMethod::class, $result->getShippingMethods());
