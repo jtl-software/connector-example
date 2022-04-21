@@ -30,7 +30,7 @@ class PrimaryKeyMapper implements PrimaryKeyMapperInterface
         $statement = $this->pdo->prepare('SELECT host FROM mappings WHERE endpoint = ? AND type = ?');
         $statement->execute([$endpointId, $type]);
 
-        return $statement->fetch();
+        return $statement->fetch()['host'];
     }
 
     /**
