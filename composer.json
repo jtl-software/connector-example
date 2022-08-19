@@ -13,6 +13,7 @@
     }
   ],
   "require": {
+    "php": "^7.4. || ^8.0 || ^8.1",
     "jtl/connector": "^5.0",
     "phpunit/phpunit": "^9.3",
     "jtl/unit-test": "^0.1.1",
