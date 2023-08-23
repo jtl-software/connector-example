@@ -32,7 +32,7 @@ class GlobalDataController implements PullInterface
         // Languages
         $globalData->addLanguage(
             (new Language())->setId(new Identity('4faa508a23e3427889bfae0561d7915d'))
-                ->setLanguageISO('ger')
+                ->setLanguageIso('ger')
                 ->setIsDefault(true)
                 ->setNameGerman('Deutsch')
                 ->setNameEnglish('German')
@@ -40,7 +40,7 @@ class GlobalDataController implements PullInterface
         
         $globalData->addLanguage(
             (new Language())->setId(new Identity('8acb0d79a1bc407e9194cc5d8359aaec'))
-                ->setLanguageISO('eng')
+                ->setLanguageIso('eng')
                 ->setIsDefault(false)
                 ->setNameGerman('Englisch')
                 ->setNameEnglish('English')
@@ -64,14 +64,14 @@ class GlobalDataController implements PullInterface
             (new CustomerGroup())->setId(new Identity('c2c6154f05b342d4b2da85e51ec805c9'))
                 ->setIsDefault(true)
                 ->setApplyNetPrice(false)
-                ->addI18n((new CustomerGroupI18n())->setName('Endkunde'))
+                ->addI18n((new CustomerGroupI18n())->setName('Endkunde')->setLanguageIso('ger'))
         );
         
         $globalData->addCustomerGroup(
             (new CustomerGroup())->setId(new Identity('b1d7b4cbe4d846f0b323a9d840800177'))
                 ->setIsDefault(false)
                 ->setApplyNetPrice(true)
-                ->addI18n((new CustomerGroupI18n())->setName('Haendler'))
+                ->addI18n((new CustomerGroupI18n())->setName('Haendler')->setLanguageIso('ger'))
         );
         
         // TaxRates
